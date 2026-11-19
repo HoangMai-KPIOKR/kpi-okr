@@ -664,6 +664,11 @@ const ghepId=(name,sh)=>{const w=norm(name).trim().split(/\s+/).filter(Boolean);
 const toCode=t=>norm(t).replace(/^to\s+/,'').split(/[^a-z0-9]+/).filter(Boolean).map(x=>x[0]).join('').toUpperCase();
 const isApprover=u=>u.isAdmin||u.role==='ql';
 const canApproveOwner=(uid)=>me().isAdmin||uObj(uid).approvers.includes(S.user);
+// Người xếp loại chốt theo nhóm (cài đặt xepLoai = {tên nhóm: tên đăng nhập}), QTV cài ở trang Phân quyền duyệt.
+// Nhóm đã có người xếp loại: chỉ người đó chốt (trừ chính họ, do người duyệt của họ chốt). Nhóm chưa có: người duyệt chốt như cũ.
+// Đã chốt rồi thì chỉ Quản trị viên sửa được (máy chủ cũng kiểm tra lại).
+const raterOf=uid=>{const x=uObj(uid),m=settings.xepLoai||{};return (x&&m[x.to])||'';};
+const canRate=(uid,p=S.period)=>{if(me().isAdmin)return true;if(ratings[p+'|'+uid])return false;const r=raterOf(uid);return r&&r!==uid?r===S.user:canApproveOwner(uid);};
 function scope(){const u=me();if(u.isAdmin)return users.filter(x=>x.evaluated);return users.filter(x=>x.evaluated&&(x.id===u.id||x.approvers.includes(u.id)));}
 function queue(){return items.filter(i=>(i.status==='cho'||i.status==='xinxoa')&&isOpen(i.period)&&canApproveOwner(i.owner));}
 
@@ -1156,7 +1161,8 @@ function summary(){
         <td>${r.c.n?`<b>${r.c.done}/${r.c.n}</b> hoàn thành`:'<span class="sub">Chưa có KPI</span>'}<div class="sub">${[r.c.vuot?`${r.c.vuot} vượt chỉ tiêu`:'',r.c.miss?`<span class="neg">${r.c.miss} không hoàn thành</span>`:'',r.c.cham?`<span class="neg">${r.c.cham} chậm tiến độ</span>`:'',r.c.ps?`${r.c.ps} phát sinh`:''].filter(Boolean).join(' · ')||(r.c.n?`Điểm 1 KPI: ${num(r.c.tb)}`:'')}</div></td>
         <td class="n"><b class="tot">${num(r.c.all)}</b><div class="sub">Phẩm chất ${num(r.c.pc)} + KPI ${num(r.c.kpi)} + OKR ${num(r.c.okr)}</div>${r.c.kpi<40?'<div class="sub neg">KPI dưới 40</div>':''}</td>
         <td><span class="chip c-${r.pr.code}" title="${RT[r.pr.code]}">${RTS[r.pr.code]}</span></td><td class="why2">${esc(r.pr.note)}</td>
-        <td>${canApproveOwner(r.x.id)?`<select data-act="rate" data-u="${r.x.id}" aria-label="Xếp loại ${esc(r.x.name)}" ${ratings[p+'|'+r.x.id]?'':'class="unset"'}><option value="">Chưa chọn</option>${Object.keys(RT).map(k=>`<option value="${k}" ${ratings[p+'|'+r.x.id]===k?'selected':''}>${RTS[k]}</option>`).join('')}</select>${ratings[p+'|'+r.x.id]&&ratings[p+'|'+r.x.id]!==r.pr.code?'<div class="sub">Khác đề xuất</div>':''}`:ratings[p+'|'+r.x.id]?`<span class="chip c-${r.f}">${RT[r.f]}</span>`:'<span class="sub">Chưa chọn</span>'}</td>
+        <td>${S.rateAsk&&S.rateAsk.u===r.x.id&&S.rateAsk.p===p?`<div class="stack" style="gap:6px"><span>Chốt <b>${RT[S.rateAsk.v]}</b>? Chốt xong chỉ Quản trị viên sửa được.</span><div class="row" style="gap:6px"><button class="btn sm pri" data-act="rate-yes">Chốt</button><button class="btn sm ghost" data-act="rate-no">Hủy</button></div></div>`
+          :canRate(r.x.id,p)?`<select data-act="rate" data-u="${r.x.id}" aria-label="Xếp loại ${esc(r.x.name)}" ${ratings[p+'|'+r.x.id]?'':'class="unset"'}><option value="">Chưa chọn</option>${Object.keys(RT).map(k=>`<option value="${k}" ${ratings[p+'|'+r.x.id]===k?'selected':''}>${RTS[k]}</option>`).join('')}</select>${ratings[p+'|'+r.x.id]&&ratings[p+'|'+r.x.id]!==r.pr.code?'<div class="sub">Khác đề xuất</div>':''}`:ratings[p+'|'+r.x.id]?`<span class="chip c-${r.f}">${RT[r.f]}</span><div class="sub">Đã chốt${raterOf(r.x.id)===S.user||canApproveOwner(r.x.id)?'. Muốn sửa, báo Quản trị viên':''}</div>`:`<span class="sub">Chưa chọn${raterOf(r.x.id)&&raterOf(r.x.id)!==S.user?` · ${esc(uObj(raterOf(r.x.id))?.name||'')} chốt`:''}</span>`}</td>
         <td class="nowrap">${repCell(r.x.id,p)}</td><td class="n">${r.pend?`<span class="chip c-cho">${r.pend} việc</span>`:'—'}</td></tr>`).join('')||'<tr><td colspan="9" class="empty">Không có dữ liệu.</td></tr>'}
       </tbody></table></div></section>
     <p class="formula">Tổng điểm = Điểm phẩm chất (mặc định ${PC}) + Điểm KPI + Điểm OKR. "Hệ thống đề xuất" tính theo Hướng dẫn số 20, xét trên KPI + OKR (mốc 40 và 60), lý do ghi ở cột bên cạnh; quản lý chọn mức ở cột "Xếp loại chốt". Vượt chỉ tiêu chỉ ghi nhận, không cộng điểm.</p>`;
@@ -1545,6 +1551,14 @@ function pqView(){
         ${pickControls('pq')}
         <div class="plist" id="pq-plist">${pickList('pq')}</div>`:`<div class="empty" style="border-top:1px solid var(--line)">Chọn một người ở trên để thêm hoặc xóa quyền duyệt.</div>`}
     </section>
+    ${me().isAdmin?(()=>{const xl=settings.xepLoai||{},tos=(settings.tos||[]).filter(t=>ev.some(u=>u.to===t)||xl[t]);
+      return `<section class="panel" id="xl-set">
+      <div class="toolbar"><h3 class="h3">Người xếp loại chốt theo nhóm</h3><div class="spacer"></div><span class="sub" style="margin:0">Chọn là lưu ngay</span></div>
+      <p class="formula pad" style="margin:0">Mỗi nhóm một người chốt xếp loại ở trang <b>Tổng hợp &amp; xếp loại</b>. Chọn người nào thì người đó được thêm quyền duyệt KPI, OKR cho cả nhóm. Đã chốt rồi thì chỉ Quản trị viên sửa được. Nhóm để trống: người duyệt của từng cán bộ chốt như trước. Cán bộ thêm vào nhóm sau này: thêm quyền duyệt cho họ ở mục trên.</p>
+      <div class="tw"><table><thead><tr><th>Nhóm</th><th class="n">Số cán bộ</th><th>Người xếp loại chốt</th><th>Chưa có quyền duyệt</th></tr></thead><tbody>
+      ${tos.map(t=>{const mem=ev.filter(u=>u.to===t),r=xl[t],miss=r?mem.filter(u=>u.id!==r&&!u.approvers.includes(r)).length:0;
+        return `<tr><td><b>${esc(t)}</b></td><td class="n">${mem.length}</td><td><select data-act="xl-set" data-to="${esc(t)}" aria-label="Người xếp loại chốt ${esc(t)}"><option value="">— Chưa cài (người duyệt chốt) —</option>${ev.map(u=>`<option value="${u.id}" ${u.id===r?'selected':''}>${esc(u.name)} · ${esc(u.to)} · ${esc(u.cv)}</option>`).join('')}</select></td><td>${miss?`<span class="neg">${miss} người</span> <button class="linkbtn" data-act="xl-fix" data-to="${esc(t)}">Thêm quyền duyệt</button>`:'—'}</td></tr>`;}).join('')||'<tr><td colspan="4" class="empty">Chưa có nhóm nào.</td></tr>'}
+      </tbody></table></div></section>`;})():''}
     <section class="panel">
       <div class="toolbar"><h3 class="h3">Danh sách phân quyền</h3><div class="spacer"></div>
         <input type="search" id="pq-ls" placeholder="Tìm người…" value="${esc(S.pqLQ||'')}" style="width:auto;flex:0 1 220px" aria-label="Tìm người">
@@ -1922,6 +1936,10 @@ document.addEventListener('click',e=>{
     case 'pq-unset-no':S.pqUnset=null;break;
     case 'pq-unset-yes':{const x=uObj(b.dataset.u);x.role='cb';users.forEach(u=>u.approvers=u.approvers.filter(a=>a!==x.id));S.pqUnset=null;toast(`Đã xóa toàn bộ quyền duyệt của ${x.name}. Kiểm tra lại những người chưa có người duyệt.`);break;}
     case 'pqlf':S.pqLF=b.dataset.f;break;
+    case 'rate-yes':{const a=S.rateAsk;S.rateAsk=null;if(a&&canRate(a.u,a.p)){ratings[a.p+'|'+a.u]=a.v;toast(`Đã chốt xếp loại ${uObj(a.u).name}: ${RT[a.v]}.`);}break;}
+    case 'rate-no':S.rateAsk=null;break;
+    case 'xl-fix':{const to=b.dataset.to,r=(settings.xepLoai||{})[to];if(!r)break;let n=0;
+      users.filter(u=>u.to===to&&u.id!==r&&u.evaluated&&u.active&&!u.approvers.includes(r)).forEach(u=>{u.approvers.push(r);n++;});toast(`Đã thêm quyền duyệt cho ${n} người.`);break;}
     case 'tdf':if(S.tdF!==b.dataset.f)S.tdMsg='';else tdKeepMsg();S.tdF=b.dataset.f;break;
     case 'td-pickmiss':tdRows(S.period).filter(r=>r.st!=='ok').forEach(r=>S.tdSel.add(r.x.id));S.tdF='all';toast('Đã chọn những người chưa nhập đủ.');break;
     case 'td-send':{const sendMsg=($('#td-msg')?.value||'').trim()||tdDefMsg(S.period);tdKeepMsg();const ids=tdPicked(S.period).map(r=>r.x.id).filter(id=>scope().some(x=>x.id===id));
@@ -2015,6 +2033,13 @@ document.addEventListener('change',e=>{
   if(t.id==='tk-file'){const f=t.files&&t.files[0];if(!f)return;
     if(!window.PizZip){toast('Chưa tải được thư viện đọc file. Kiểm tra mạng rồi thử lại.');render();return;}
     f.arrayBuffer().then(buf=>{S.imp=tkCheck(readXlsx(buf),f.name);}).catch(err=>{S.imp={file:f.name,err:'Không đọc được file này. Hãy dùng file .xlsx tải từ nút "Xuất file mẫu". ('+(err.message||err)+')',rows:[]};}).then(render);return;}
+  if(a==='xl-set'){const to=t.dataset.to,uid=t.value,m=Object.assign({},settings.xepLoai||{});
+    if(uid){m[to]=uid;let n=0;users.filter(u=>u.to===to&&u.id!==uid&&u.evaluated).forEach(u=>{if(!u.approvers.includes(uid)){u.approvers.push(uid);n++;}});
+      const r=uObj(uid);if(r&&!r.isAdmin&&r.role!=='ql')r.role='ql';toast(`${r.name} xếp loại chốt ${to}${n?`, được thêm quyền duyệt cho ${n} người`:''}.`);}
+    else{delete m[to];toast(`Bỏ người xếp loại chốt ${to}: người duyệt sẽ chốt như trước.`);}
+    settings.xepLoai=m;render();return;}
+  if(a==='rate'){const u=t.dataset.u;if(!canRate(u)){render();return;}
+    if(t.value&&!me().isAdmin){S.rateAsk={u,v:t.value,p:S.period};render();return;}}
   if(a==='rate'){const k=S.period+'|'+t.dataset.u;if(!t.value){delete ratings[k];toast(`Đã bỏ xếp loại ${uObj(t.dataset.u).name}.`);}else{ratings[k]=t.value;toast(`Đã xếp loại ${uObj(t.dataset.u).name}: ${RT[t.value]}.`);}render();return;}
   if(t.id==='period'){S.period=t.value;S.sel.clear();S.editing=null;render();return;}
   if(t.id==='pyear'){const ps=periods.filter(p=>p.id.startsWith(t.value)),cur=ps.find(p=>p.id.slice(5)===S.period.slice(5));S.period=(cur||ps.at(-1)).id;S.sel.clear();S.editing=null;render();return;}
