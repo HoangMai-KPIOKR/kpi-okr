@@ -1012,6 +1012,8 @@ function mine(v){
       <div class="mhead"><h3 class="h3" id="it-h">${ed?`Sửa ${c.title}`:addTitle}${!ed&&S.itemWas?'<span class="chip c-cho" style="margin-left:6px">Mở lại bản nháp</span>':''}</h3><button class="btn ghost sm" type="button" data-act="item-close" aria-label="Đóng">✕</button></div>
       ${ed?'':(()=>{const opts=periods.filter(x=>x.state==='open'&&!(v==='kpi'&&regLocked(x.id))),sel=fd?.period||(v==='ps'?p:'');
         return `<div class="field"><label for="it-period">${v==='ps'?'Phát sinh trong tháng':'Đăng ký cho tháng'}</label><select id="it-period" required><option value="" ${sel?'':'selected'} disabled>— Chọn tháng, năm —</option>${opts.map(x=>`<option value="${x.id}" ${x.id===sel?'selected':''}>${pLabel(x.id)}${x.id===curP()?' (tháng này)':x.id===addMonth(curP(),1)?' (tháng sau)':''}</option>`).join('')}</select></div>`;})()}
+      ${(()=>{const vts=vtList(c.type),sel=vtSaved(c.type,vts);if(vts.length<2)return '';
+        return `<div class="field"><label for="it-vt">Vị trí việc làm <span class="sub" style="font-weight:400">(lọc gợi ý đầu việc mẫu)</span></label><select id="it-vt" data-type="${c.type}"><option value="">— Tất cả vị trí —</option>${vts.map(g=>`<option value="${esc(g)}" ${g===sel?'selected':''}>${esc(vtLabel(g))}</option>`).join('')}</select></div>`;})()}
       <div class="field sugwrap"><label for="it-text">Nội dung</label><input type="text" id="it-text" data-sug="${c.type}" autocomplete="off" required placeholder="Gõ nội dung, hoặc gõ vài chữ để chọn đầu việc mẫu" value="${fd?esc(fd.text||''):''}"><div class="sugbox" id="sug-it-text" hidden></div></div>
       <div class="field"><label for="it-ct">Chỉ tiêu / kết quả phải đạt</label><input type="text" id="it-ct" placeholder="Ví dụ: 05 hồ sơ, xong trước 25/10" value="${fd?esc(fd.chiTieu||''):''}"></div>
       ${v==='ps'?'':`<div class="field"><label for="it-sp">Sản phẩm đầu ra dự kiến</label><input type="text" id="it-sp" placeholder="Ví dụ: 05 biên bản" value="${fd?esc(fd.spDuKien||''):''}"></div>
@@ -2017,6 +2019,7 @@ document.addEventListener('change',e=>{
   if(t.id==='period'){S.period=t.value;S.sel.clear();S.editing=null;render();return;}
   if(t.id==='pyear'){const ps=periods.filter(p=>p.id.startsWith(t.value)),cur=ps.find(p=>p.id.slice(5)===S.period.slice(5));S.period=(cur||ps.at(-1)).id;S.sel.clear();S.editing=null;render();return;}
   if(t.id.startsWith('flt-')){S.filter[t.id.slice(4)]=t.value;refreshList();return;}
+  if(t.id==='it-vt'){try{localStorage.setItem(vtKey(t.dataset.type),t.value);}catch(_){}const i=$('#it-text');if(i){i.focus();showSug(i);}return;}
   if(t.id==='it-lib'&&t.value){$('#it-text').value=library.find(x=>x.id===t.value).text;return;}
   if(t.id==='g-lib'&&t.value){S.giao.text=library.find(x=>x.id===t.value).text;render();return;}
   if(t.id==='g-period'){S.giao.period=t.value;return;}
@@ -2030,11 +2033,21 @@ document.addEventListener('change',e=>{
   if(t.id==='rp-who'){S.rep.who=t.value;render();return;}
 });
 
+// Ô "Vị trí việc làm" ở form thêm KPI/OKR: các nhóm thư viện của tổ mình + mục Chung. Trình duyệt nhớ lựa chọn theo người và loại.
+function vtList(type){const mine=toKey(me().toCT||me().to);
+  const gs=[...new Set(library.filter(t=>t.type===type&&(!mine||libTo(t)===mine||libTo(t)==='Chung')).map(t=>t.group))];
+  return gs.sort((a,b)=>(libTo({group:a})==='Chung')-(libTo({group:b})==='Chung')||a.localeCompare(b,'vi'));}
+function vtLabel(g){const mine=toKey(me().toCT||me().to),p=String(g).split(' · ');
+  if(p[0]==='Chung')return p.length>1?p.slice(1).join(' · ')+' (chung)':'Chung (mọi tổ)';
+  return mine&&p[0]===mine&&p.length>1?p.slice(1).join(' · '):g;}
+const vtKey=type=>'kpi_vt_'+(me()?.id||'')+'_'+type;
+function vtSaved(type,vts){let v='';try{v=localStorage.getItem(vtKey(type))||'';}catch(_){}return vts.includes(v)?v:'';}
 function showSug(inp){const box=document.getElementById('sug-'+inp.id);if(!box)return;const q=norm(inp.value.trim());
   const mine=inp.id==='it-text'?toKey(me().toCT||me().to):'';
-  const list=library.filter(t=>t.type===inp.dataset.sug&&(!mine||libTo(t)===mine||libTo(t)==='Chung')&&(!q||norm(t.text+' '+t.group).includes(q))&&norm(t.text)!==q).slice(0,8);
+  const vt=inp.id==='it-text'?($('#it-vt')?.value||''):'';
+  const list=library.filter(t=>t.type===inp.dataset.sug&&(vt?t.group===vt:(!mine||libTo(t)===mine||libTo(t)==='Chung'))&&(!q||norm(t.text+' '+t.group).includes(q))&&norm(t.text)!==q).slice(0,vt?80:8);
   if(!list.length){box.hidden=true;return;}
-  box.innerHTML='<div class="sughd">'+(mine?'Đầu việc mẫu của tổ '+esc(mine):'Đầu việc mẫu trong thư viện')+'</div>'+list.map(t=>`<button type="button" class="sugit" data-sugfor="${inp.id}" data-id="${t.id}"><span>${esc(t.text)}</span><small>${esc(t.group)}</small></button>`).join('');box.hidden=false;}
+  box.innerHTML='<div class="sughd">'+(vt?'Đầu việc mẫu · '+esc(vtLabel(vt)):mine?'Đầu việc mẫu của tổ '+esc(mine):'Đầu việc mẫu trong thư viện')+'</div>'+list.map(t=>`<button type="button" class="sugit" data-sugfor="${inp.id}" data-id="${t.id}"><span>${esc(t.text)}</span><small>${esc(t.group)}</small></button>`).join('');box.hidden=false;}
 document.addEventListener('focusin',e=>{if(e.target.dataset&&e.target.dataset.sug)showSug(e.target);});
 document.addEventListener('focusout',e=>{if(e.target.dataset&&e.target.dataset.sug){const id=e.target.id;setTimeout(()=>{const b=document.getElementById('sug-'+id);if(b)b.hidden=true;},150);}});
 document.addEventListener('keydown',e=>{const sb=e.target.dataset&&e.target.dataset.sug&&document.getElementById('sug-'+e.target.id);if(e.key==='Escape'&&sb&&!sb.hidden){sb.hidden=true;return;}
