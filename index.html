@@ -2011,8 +2011,11 @@ function pwModal(){
 // Kỳ riêng cho tổng kết năm (cài đặt tkNam = {year, open, vuot, okr}), không dùng kỳ tháng, không qua duyệt.
 // Cán bộ chọn vị trí việc làm (nhiều vị trí), tick việc trong thư viện, chọn kết quả là ra điểm; thêm việc khác, KPI phát sinh, OKR bằng form.
 // Mỗi người 1 phiếu chung (Phụ lục 1 + Phụ lục 2 gộp mọi vị trí). Điểm cơ sở mỗi KPI = 40 ÷ tổng số KPI cơ sở đã chọn.
-const TN_DEF={year:'',open:false,vuot:0.5,okr:1.5};
-const tnCfg=()=>{const c=Object.assign({},TN_DEF,settings.tkNam||{});c.vuot=Number(c.vuot);c.okr=Number(c.okr);if(!(c.vuot>=0))c.vuot=0.5;if(!(c.okr>0))c.okr=1.5;return c;};
+const TN_DEF={year:'',open:false,vuot:0.5,okr:2};
+const tnCfg=()=>{const c=Object.assign({},TN_DEF,settings.tkNam||{});c.vuot=Number(c.vuot);c.okr=Number(c.okr);if(!(c.vuot>=0))c.vuot=0.5;if(!(c.okr>0))c.okr=2;return c;};
+// Tên cơ quan ở đầu phiếu in (theo yêu cầu của đơn vị) và địa danh dòng ngày tháng
+const TN_CQ='CÔNG AN PHƯỜNG HOÀNG MAI';
+const tnDiaDanh=()=>{const d=String(settings.diaDanh||'').trim();return d&&!/^[.…\s]*$/.test(d)?d:'Hoàng Mai';};
 const tnYear=()=>String(tnCfg().year||'');
 const tnOpen=()=>!!tnYear()&&!!tnCfg().open;
 // Phụ lục 1: tiêu chí chung (theo phiếu mẫu DM1 - CBCS). Dòng "head" là nhóm; điểm tính trên các dòng lá.
@@ -2163,7 +2166,7 @@ function tnPhieu(uid,y){const u=uObj(uid),c=tnCalc(uid,y),h=c.h,f=n=>num(Math.ro
   const pl1Rows=TN_PL1.map(x=>{if(x.head)return `<tr class="sec"><td class="c">${x.k}</td><td>${esc(x.t)}</td><td class="c">${x.max}</td><td></td><td></td><td class="r">${f(TN_PL1.filter(z=>!z.head&&z.k.startsWith(x.k+'.')).reduce((s,z)=>s+(h.pl1[z.k]===false?0:z.max),0))}</td></tr>`;
     const ok=h.pl1[x.k]!==false;return `<tr><td class="c">${x.k}</td><td>${esc(x.t)}</td><td class="c">${x.max}</td><td class="c">${ok?'X':''}</td><td class="c">${ok?'':'X'}</td><td class="r">${ok?x.max:0}</td></tr>`;}).join('');
   return `<div class="phieu">
-    <div class="qh"><div><b>${esc(dv.toUpperCase())}</b><b class="u">${esc(to.toUpperCase()||'TỔ……………')}</b></div><div><b>CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM</b><b class="u">Độc lập - Tự do - Hạnh phúc</b></div></div>
+    <div class="qh"><div><b>${esc(TN_CQ)}</b><b class="u">${esc(to.toUpperCase()||'TỔ……………')}</b></div><div><b>CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM</b><b class="u">Độc lập - Tự do - Hạnh phúc</b></div></div>
     <h1>PHIẾU TỰ CHẤM ĐIỂM KPI, OKR NĂM ${esc(y)}</h1>
     <div class="info"><div>Họ và tên: <b>${esc(u.name)}</b></div><div>Số hiệu: ${esc(fmtSH(shOf(u)))}</div><div>Cấp bậc: ${esc(u.capBac||'')}</div><div>Chức vụ: ${esc(u.cv||'')}</div>
       <div style="grid-column:1/-1">Vị trí việc làm: ${esc(h.vts.map(vtShort).join('; ')||'…')}</div></div>
@@ -2182,7 +2185,7 @@ function tnPhieu(uid,y){const u=uObj(uid),c=tnCalc(uid,y),h=c.h,f=n=>num(Math.ro
       <tr><td>Tổng điểm Phụ lục 2 (KPI + OKR)</td><td class="r">${f(c.pl2)}</td></tr>
       <tr class="tot"><td>Tổng điểm Phụ lục 1 + 2</td><td class="r">${f(c.all)}</td></tr>
       <tr><td>Tự nhận mức</td><td class="r"><b>${RT[c.tuNhan]||''}</b></td></tr></tbody></table>
-    <p class="tt" style="text-align:right">${esc(settings.diaDanh||'……')}, ngày …… tháng …… năm ${esc(y)}</p>
+    <p class="tt" style="text-align:right">${esc(tnDiaDanh())}, ngày …… tháng …… năm ${esc(y)}</p>
     <div class="ky"><div><b>CÁN BỘ TỰ CHẤM ĐIỂM</b><i>(Ký, ghi rõ họ tên)</i><b>${esc(u.name)}</b></div><div><b>DUYỆT CỦA CHỈ HUY TỔ</b><i>(Ký, ghi rõ họ tên)</i></div></div>
   </div>`;}
 function tnClosePrint(){document.querySelector('.tkpv')?.remove();document.body.classList.remove('tkprinting');}
@@ -2285,7 +2288,7 @@ document.addEventListener('submit',e=>{const f=e.target;
   if(f.id==='f-tnky'){e.preventDefault();const yr=String(Math.round(Number($('#tny-year').value)));
     if(!/^\d{4}$/.test(yr)){toast('Năm không hợp lệ.');render();return;}
     const old=tnCfg(),isNew=!old.year;
-    settings.tkNam={year:yr,open:isNew?true:old.open,vuot:Math.max(0,Number($('#tny-vuot').value)||0),okr:Math.max(1,Number($('#tny-okr').value)||1.5)};
+    settings.tkNam={year:yr,open:isNew?true:old.open,vuot:Math.max(0,Number($('#tny-vuot').value)||0),okr:Math.max(1,Number($('#tny-okr').value)||2)};
     toast(isNew?`Đã mở kỳ tổng kết năm ${yr}. Cán bộ thấy menu "Tổng kết năm".`:'Đã lưu cài đặt kỳ tổng kết năm.');render();return;}
 });
 
