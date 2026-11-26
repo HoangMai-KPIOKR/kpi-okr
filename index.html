@@ -1137,7 +1137,7 @@ function mine(v){
     ${v==='ps'&&!k.n?`<div class="notice">Chưa có KPI được giao hoặc tự đăng ký trong kỳ nên KPI phát sinh chưa có điểm.</div>`:''}
     ${S.itemOpen===v||ed?`<div class="ov" data-act="item-close-ov"><form class="modal md mxl panel pad stack" id="f-item" data-v="${v}" role="dialog" aria-modal="true" aria-labelledby="it-h">
       <div class="mhead"><h3 class="h3" id="it-h">${ed?`Sửa ${c.title}`:addTitle}${!ed&&S.itemWas?'<span class="chip c-cho" style="margin-left:6px">Mở lại bản nháp</span>':''}</h3><button class="btn ghost sm" type="button" data-act="item-close" aria-label="Đóng">✕</button></div>
-      ${ed?'':(()=>{const opts=periods.filter(x=>x.state==='open'&&!(v==='kpi'&&regLocked(x.id))),sel=fd?.period||(v==='ps'?p:'');
+      ${ed?'':(()=>{const opts=periods.filter(x=>isOpen(x.id)&&!(v==='kpi'&&regLocked(x.id))),sel=fd?.period||(v==='ps'?p:'');
         return `<div class="field"><label for="it-period">${v==='ps'?'Phát sinh trong tháng':'Đăng ký cho tháng'}</label><select id="it-period" required><option value="" ${sel?'':'selected'} disabled>— Chọn tháng, năm —</option>${opts.map(x=>`<option value="${x.id}" ${x.id===sel?'selected':''}>${pLabel(x.id)}${x.id===curP()?' (tháng này)':x.id===addMonth(curP(),1)?' (tháng sau)':''}</option>`).join('')}</select></div>`;})()}
       ${(()=>{const vts=vtList(c.type),sel=vtSaved(c.type,vts);if(vts.length<2)return '';
         return `<div class="field"><label for="it-vt">Vị trí việc làm <span class="sub" style="font-weight:400">(lọc gợi ý đầu việc mẫu)</span></label><select id="it-vt" data-type="${c.type}"><option value="">— Tất cả vị trí —</option>${vts.map(g=>`<option value="${esc(g)}" ${g===sel?'selected':''}>${esc(vtLabel(g))}</option>`).join('')}</select></div>`;})()}
@@ -1372,7 +1372,7 @@ function giaoView(){
 }
 
 function giaoModal(){
-  const g=S.giao,openP=periods.filter(p=>p.state==='open');
+  const g=S.giao,openP=periods.filter(p=>isOpen(p.id));
   if(!openP.some(p=>p.id===g.period))g.period=(openP.find(p=>p.id>=curP())||openP.at(-1))?.id||'';
   return `<div class="ov" data-act="giao-close-ov"><div class="modal lg xl panel" role="dialog" aria-modal="true" aria-labelledby="g-h">
     <div class="mhead pad" style="border-bottom:1px solid var(--line)"><h3 class="h3" id="g-h">Giao ${g.type} mới ${S.giaoWasDraft?'<span class="chip c-cho" style="margin-left:6px">Mở lại bản nháp</span>':''}</h3><button class="btn ghost sm" type="button" data-act="giao-close" aria-label="Đóng, lưu nháp">✕</button></div>
@@ -1736,7 +1736,7 @@ function kyView(){
         if(p.state==='closed')act=`<button class="btn sm" data-act="reopen" data-p="${p.id}">Mở lại</button>`;
         else if(S.chot===p.id)act=`<button class="btn sm bad" data-act="chot-yes" data-p="${p.id}">Xác nhận chốt</button><button class="btn sm ghost" data-act="chot-no">Hủy</button>`;
         else{act=`${pend?`<span class="tipw" tabindex="0" data-tip="${esc(['Chỉ chốt được tháng khi:',`• Không còn việc chờ duyệt (còn ${pend} việc)`].join('\n'))}"><button class="btn sm pri" disabled>Chốt tháng</button></span>`:`<button class="btn sm pri" data-act="chot" data-p="${p.id}">Chốt tháng</button>`}${pend?`<div class="sub">Duyệt hết ${pend} mục trước</div>`:''}`;}
-        return `<tr><td><b>${pLabel(p.id)}</b></td><td class="dt">${settings.lockDay?`${fmtD(lockDate(p.id))}${regLocked(p.id)?' · đã qua':''}`:'Không chốt'}</td><td>${p.state==='closed'?'<span class="chip c-lock">Đã chốt</span>':'<span class="chip c-duyet">Đang mở</span>'}</td>
+        return `<tr><td><b>${pLabel(p.id)}</b></td><td class="dt">${settings.lockDay?`${fmtD(lockDate(p.id))}${regLocked(p.id)?' · đã qua':''}`:'Không chốt'}</td><td>${p.state==='closed'?'<span class="chip c-lock">Đã chốt</span>':thangDong()?'<span class="chip c-cho">Tạm đóng</span>':'<span class="chip c-duyet">Đang mở</span>'}</td>
           <td class="n">${pend?`<span class="chip c-cho">${pend}</span>`:'0'}</td><td class="n ${left&&p.state==='open'?'neg':''}">${left}</td><td><div class="acts">${act}</div></td></tr>
           ${S.chot===p.id?`<tr><td colspan="6" class="confirm">Chốt ${pLabel(p.id)}: <b>${left} KPI chưa hoàn thành</b> sẽ tính Không hoàn thành và bị trừ điểm. Sau khi chốt, cán bộ không sửa được kỳ này.</td></tr>`:''}`;}).join('')}
     </tbody></table></div></section>
