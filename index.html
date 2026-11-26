@@ -534,6 +534,64 @@ td.nowrap{white-space:nowrap}
   .menu-btn{display:inline-flex}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* ===== Tổng kết năm ===== */
+.tkvt{display:flex;flex-wrap:wrap;gap:8px}
+.tkvt label{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:99px;padding:6px 12px;background:var(--surface);cursor:pointer;font-weight:500}
+.tkvt label.on{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.tkvt input{margin:0}
+.tkkq{display:inline-flex;flex-wrap:wrap;gap:4px}
+.tkkq button{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:7px;padding:4px 9px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.tkkq button[aria-pressed=true]{color:#fff;border-color:transparent}
+.tkkq button[aria-pressed=true][data-kq=dat]{background:var(--good)}
+.tkkq button[aria-pressed=true][data-kq=vuot]{background:var(--info)}
+.tkkq button[aria-pressed=true][data-kq=cham]{background:var(--warn)}
+.tkkq button[aria-pressed=true][data-kq=khong]{background:var(--bad)}
+table.tktbl td{vertical-align:top}
+table.tktbl tr.off td{color:var(--muted)}
+table.tktbl tr.off .jt{opacity:.75}
+table.tktbl td.cb{width:34px}
+table.tktbl input.tkct{margin-top:6px;font-size:13px;padding:5px 8px}
+.tkhd{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line)}
+.tkhd h3{margin:0}
+.tksug{max-height:260px;overflow:auto;border:1px solid var(--line);border-radius:8px;margin-top:6px}
+.tksug button{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:var(--surface);padding:8px 10px;font-size:13px}
+.tksug button:hover{background:var(--accent-soft)}
+.tksug small{display:block;color:var(--muted);font-size:11.5px}
+@media (max-width:700px){table.tktbl thead{display:none}table.tktbl,table.tktbl tbody{display:block;min-width:0}
+  table.tktbl tr{display:flex;flex-wrap:wrap;gap:6px 10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+  table.tktbl td{display:block;padding:0;border:0}table.tktbl td.job{flex:1 1 calc(100% - 44px);min-width:0}
+  table.tktbl td.kqc{flex:1 1 100%;margin-left:44px}table.tktbl td.n{margin-left:44px;text-align:left}}
+/* Phiếu chấm điểm: xem trước trên màn hình và bản in A4 */
+.tkpv{position:fixed;inset:0;z-index:60;background:rgba(18,26,24,.78);display:flex;flex-direction:column}
+.tkpv .pvbody{padding:16px 8px}
+.phieu{background:#fff;color:#000;width:min(210mm,100%);margin:0 auto 18px;padding:14mm 12mm;box-shadow:0 4px 18px rgba(0,0,0,.35);font:13px/1.4 "Times New Roman",Times,serif}
+.phieu table{width:100%;border-collapse:collapse;margin:6px 0 10px;font-size:12.5px;min-width:0;background:#fff;color:#000;table-layout:fixed}
+.phieu td{overflow-wrap:anywhere}
+.phieu th,.phieu td{border:1px solid #000;padding:4px 5px;vertical-align:top;text-align:left;color:#000;background:#fff;font-weight:400}
+.phieu th{font-weight:700;text-align:center;vertical-align:middle}
+.phieu td.c{text-align:center}.phieu td.r{text-align:right;white-space:nowrap}
+.phieu tr.sec td{font-weight:700;background:#f2f2f2}
+.phieu tr.tot td{font-weight:700}
+.phieu .qh{display:grid;grid-template-columns:1fr 1.3fr;text-align:center;gap:8px}
+.phieu .qh b{display:block}
+.phieu .qh .u{display:inline-block;border-bottom:1px solid #000;padding-bottom:1px}
+.phieu h1{font-size:15px;text-align:center;margin:14px 0 2px;font-weight:700}
+.phieu h2{font-size:13.5px;margin:12px 0 2px;font-weight:700}
+.phieu .tt{text-align:center;font-style:italic;margin:0 0 8px}
+.phieu .info{display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;margin:8px 0}
+.phieu .ky{display:grid;grid-template-columns:1fr 1fr;text-align:center;margin-top:14px;gap:12px}
+.phieu .ky b{display:block}.phieu .ky i{display:block;margin-bottom:56px}
+.phieu .noprint{color:#666}
+@media print{
+  @page{size:A4;margin:12mm 10mm}
+  body.tkprinting>*:not(.tkpv){display:none!important}
+  body.tkprinting .tkpv{position:static;background:none;display:block}
+  body.tkprinting .tkpv .pvbar{display:none}
+  body.tkprinting .tkpv .pvbody{padding:0;overflow:visible}
+  body.tkprinting .phieu{box-shadow:none;width:auto;padding:0;margin:0;page-break-after:always}
+  body.tkprinting .phieu:last-child{page-break-after:auto}
+  .phieu tr{page-break-inside:avoid}
+}
 </style>
 </head>
 <body>
@@ -558,6 +616,7 @@ const users=[];
 const CAP_BAC=['Hạ sĩ','Trung sĩ','Thượng sĩ','Thiếu úy','Trung úy','Thượng úy','Đại úy','Thiếu tá','Trung tá','Thượng tá','Đại tá'];
 const periods=[],library=[];
 const assigns=[],items=[],history=[],ratings={},plans={},reports={},reminders=[];
+const tkItems=[],tkHead={}; // Tổng kết năm: việc đã chọn (mỗi dòng 1 việc) và phần đầu phiếu theo "năm|người"
 const uObj=id=>users.find(u=>u.id===id);
 // Mã duy nhất cho bản ghi mới (nhiều người cùng nhập không bị trùng)
 const newId=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
@@ -577,7 +636,7 @@ function autoRepeat(){const cur=nowISO().slice(0,7),nx=addMonth(cur,1);let n=0;
 // ================= ĐỒNG BỘ VỚI GOOGLE SHEET =================
 // Mỗi lần giao diện vẽ lại, so dữ liệu với lần lưu trước và chỉ gửi phần thay đổi lên máy chủ.
 const API={token:null,snap:{},queue:[],timer:null,busy:false,again:false,lastLoad:0};
-const COLLS={users:[users,'id'],periods:[periods,'id'],library:[library,'id'],assigns:[assigns,'id'],items:[items,'id'],history:[history,'id'],reminders:[reminders,'id'],ratings:[ratings],reports:[reports],plans:[plans],settings:[settings]};
+const COLLS={users:[users,'id'],periods:[periods,'id'],library:[library,'id'],assigns:[assigns,'id'],items:[items,'id'],history:[history,'id'],reminders:[reminders,'id'],ratings:[ratings],reports:[reports],plans:[plans],settings:[settings],tkItems:[tkItems,'id'],tk:[tkHead]};
 const entriesOf=c=>{const [ref,key]=COLLS[c];return key?ref.map(r=>[r[key],r]):Object.keys(ref).map(k=>[k,ref[k]]);};
 function takeSnap(){API.snap={};for(const c in COLLS){const m={};entriesOf(c).forEach(([k,v])=>m[k]=JSON.stringify(v));API.snap[c]=m;}}
 function diffChanges(){const out=[];for(const c in COLLS){const old=API.snap[c]||(API.snap[c]={}),seen={};
@@ -610,12 +669,13 @@ function applyData(d){
   for(const k of Object.keys(settings))delete settings[k];Object.assign(settings,{base:40,lockDay:5,okrMin:1.5,okrMax:5,tos:[],cvs:[],phuTrach:{}},d.settings||{});
   ['base','lockDay','okrMin','okrMax'].forEach(k=>settings[k]=Number(settings[k]));
   if(!Array.isArray(settings.tos))settings.tos=[];if(!Array.isArray(settings.cvs))settings.cvs=[];if(!settings.phuTrach||typeof settings.phuTrach!=='object')settings.phuTrach={};
-  for(const c of ['users','periods','library','assigns','items','history','reminders']){const ref=COLLS[c][0];ref.splice(0,ref.length,...(d[c]||[]));}
-  for(const c of ['ratings','reports','plans']){const ref=COLLS[c][0];for(const k of Object.keys(ref))delete ref[k];Object.assign(ref,d[c]||{});}
+  for(const c of ['users','periods','library','assigns','items','history','reminders','tkItems']){const ref=COLLS[c][0];ref.splice(0,ref.length,...(d[c]||[]));}
+  for(const c of ['ratings','reports','plans','tk']){const ref=COLLS[c][0];for(const k of Object.keys(ref))delete ref[k];Object.assign(ref,d[c]||{});}
   users.forEach(u=>{if(!Array.isArray(u.approvers))u.approvers=[];});
   assigns.forEach(a=>{if(!Array.isArray(a.periods))a.periods=[];if(!Array.isArray(a.recipients))a.recipients=[];});
   Object.values(reports).forEach(r=>{if(!Array.isArray(r.nx))r.nx=['Không.','','Không.','','Không.','Không.','Không.'];});
   Object.values(plans).forEach(p=>{if(!Array.isArray(p.dk))p.dk=[...DK_DEFAULT];});
+  Object.values(tkHead).forEach(h=>{if(!Array.isArray(h.vts))h.vts=[];if(!h.pl1||typeof h.pl1!=='object')h.pl1={};});
   periods.sort((a,b)=>a.id<b.id?-1:1);history.sort((a,b)=>a.at<b.at?1:-1);
   takeSnap();API.lastLoad=Date.now();
   autoRepeat();} // việc lặp mới giao (nếu có) được lưu ở lần đồng bộ kế tiếp
@@ -787,7 +847,7 @@ function periodPicker(){const y=S.period.slice(0,4),years=[...new Set(periods.ma
 function dlNeed(){const u=me(),p=curP();if(!u||!u.evaluated||!isOpen(p))return null;
   const its=items.filter(i=>i.owner===u.id&&i.period===p),noKpi=!its.some(i=>i.type==='KPI'&&i.src==='dk')&&!regLocked(p),noOkr=!its.some(i=>i.type==='OKR');
   return noKpi||noOkr?{p,noKpi,noOkr}:null;}
-function dlModal(){const d=dlNeed();if(!d||S.dlSeen[d.p])return '';
+function dlModal(){const d=dlNeed();if(!d||S.dlSeen[d.p]||S.view==='tknam')return '';
   const ld=lockDate(d.p),days=Math.round((new Date(ld)-new Date(nowISO().slice(0,10)))/864e5);
   return `<div class="ov" data-act="dl-close-ov"><div class="modal panel pad stack" role="dialog" aria-modal="true" aria-labelledby="dl-h" style="max-width:440px">
     <div class="mhead"><h3 class="h3" id="dl-h">Nhắc đăng ký ${pLabel(d.p)}</h3><button class="btn ghost sm" type="button" data-act="dl-close" aria-label="Đóng">✕</button></div>
@@ -850,18 +910,20 @@ const ICON={
   thuvien:'<path d="M5 4h4v16H5z"/><path d="M11 4h4v16h-4z"/><path d="M17.5 5l3 .8-3.6 14-3-.8"/>',
   ky:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/><path d="M9.5 15l2 2 3.5-4"/>',
   taikhoan:'<circle cx="9" cy="9" r="3.2"/><path d="M3.5 19c.8-3 3-4.5 5.5-4.5s4.7 1.5 5.5 4.5"/><circle cx="17" cy="8" r="2.5"/><path d="M16 13.6c2.2 0 3.9 1.3 4.5 3.9"/>',
-  caidat:'<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>'
+  caidat:'<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>',
+  tknam:'<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M9.5 13l1.8 1.8 3.4-3.6"/><path d="M9.5 18h5"/>',
+  tkdv:'<path d="M4 20h16"/><path d="M6 16l4-5 3 3 5-7"/><path d="M15 7h3v3"/>'
 };
 const NAVL={bcdau:'Tổng hợp đầu tháng',bccuoi:'Tổng hợp cuối tháng'};
 const LABEL={chuongtrinh:'Chương trình tháng',bcthang:'Báo cáo tháng',theodoi:'Theo dõi nhập liệu',phanquyen:'Phân quyền duyệt',tongquan:'Tổng quan',tqdv:'Tổng quan đơn vị',kpi:'KPI',ps:'KPI phát sinh',okr:'OKR',duyet:'Chờ duyệt',tonghop:'Tổng hợp & xếp loại',bcdau:'Tổng hợp đăng ký đầu tháng',bccuoi:'Tổng hợp kết quả cuối tháng',
-  giao:'Giao việc',thuvien:'Thư viện đầu việc',ky:'Kỳ & chốt tháng',taikhoan:'Tài khoản',caidat:'Cài đặt'};
+  giao:'Giao việc',thuvien:'Thư viện đầu việc',ky:'Kỳ & chốt tháng',taikhoan:'Tài khoản',caidat:'Cài đặt',tknam:'Tổng kết năm',tkdv:'Tổng kết năm đơn vị'};
 // Menu chia 2 nhóm lớn: "Của tôi" (việc của bản thân) và "Quản lý đơn vị" (duyệt, theo dõi, quản trị).
 // Người có cả 2 vai trò thấy thanh chuyển ở đầu menu; người chỉ có 1 vai trò thấy đúng nhóm của mình.
-const ME_VIEWS=['tongquan','chuongtrinh','bcthang','kpi','ps','okr'];
+const ME_VIEWS=['tongquan','chuongtrinh','bcthang','kpi','ps','okr','tknam'];
 const hasBoth=u=>!!u.evaluated&&isApprover(u);
 const sideOf=v=>ME_VIEWS.includes(v)?'me':'org';
-function meGroups(){return [['Tổng quan – Báo cáo',['tongquan','chuongtrinh','bcthang']],['Nhập liệu',['kpi','ps','okr']]];}
-function orgGroups(u){const g=[['Tổng quan',['tqdv']],['Theo dõi & duyệt',['theodoi','duyet',...(u.isAdmin?['giao']:[])]],['Xếp loại & báo cáo',['tonghop','bcdau','bccuoi']]];
+function meGroups(){return [['Tổng quan – Báo cáo',['tongquan','chuongtrinh','bcthang']],['Nhập liệu',['kpi','ps','okr']],...(tnYear()?[['Tổng kết năm',['tknam']]]:[])];}
+function orgGroups(u){const g=[['Tổng quan',['tqdv']],['Theo dõi & duyệt',['theodoi','duyet',...(u.isAdmin?['giao']:[])]],['Xếp loại & báo cáo',['tonghop','bcdau','bccuoi',...(tnYear()?['tkdv']:[])]]];
   if(u.isAdmin)g.push(['Thiết lập hệ thống',['ky','phanquyen','thuvien','taikhoan','caidat']]);return g;}
 function navGroups(u){if(!isApprover(u))return meGroups();if(!u.evaluated)return orgGroups(u);return sideOf(S.view)==='me'?meGroups():orgGroups(u);}
 function allGroups(u){return [...(u.evaluated?meGroups():[]),...(isApprover(u)?orgGroups(u):[])];}
@@ -900,7 +962,7 @@ function shell(){
 }
 function view(){
   if(VC[S.view])return mine(S.view);
-  return ({chuongtrinh:ctView,bcthang:bcView,theodoi:tdView,phanquyen:pqView,tongquan:overview,tqdv:orgView,duyet:approvals,tonghop:summary,bcdau:reportDau,bccuoi:reportCuoi,giao:giaoView,thuvien:libView,ky:kyView,taikhoan:accounts,caidat:settingsView}[S.view]||(()=>''))();
+  return ({chuongtrinh:ctView,bcthang:bcView,theodoi:tdView,phanquyen:pqView,tongquan:overview,tqdv:orgView,duyet:approvals,tonghop:summary,bcdau:reportDau,bccuoi:reportCuoi,giao:giaoView,thuvien:libView,ky:kyView,taikhoan:accounts,caidat:settingsView,tknam:tnView,tkdv:tnOrgView}[S.view]||(()=>''))();
 }
 
 // ================= TỔNG QUAN CÁ NHÂN =================
@@ -1658,6 +1720,7 @@ function libView(){
 // ================= QTV: KỲ & CHỐT THÁNG =================
 function kyView(){
   return `<div class="head"><h2>Kỳ & chốt tháng</h2><p>Hết tháng, việc nào cán bộ chưa báo gì thì hệ thống tự chuyển Không hoàn thành (KPI bị trừ 2 × điểm TB, OKR không bị trừ). Việc đang chờ duyệt giữ nguyên để quản lý duyệt. Chốt tháng khi đã duyệt hết.</p></div>
+    ${tnKyPanel()}
     <section class="panel"><div class="tw"><table><thead><tr><th>Kỳ</th><th>Hạn chốt đăng ký</th><th>Trạng thái</th><th class="n">Chờ duyệt</th><th class="n">KPI chưa hoàn thành</th><th class="n">Thao tác</th></tr></thead><tbody>
       ${periods.slice().reverse().map(p=>{const its=items.filter(i=>i.period===p.id),pend=its.filter(i=>i.status==='cho'||i.status==='xinxoa').length,left=its.filter(i=>i.type==='KPI'&&i.src!=='ps'&&i.status==='chua').length;
         let act;
@@ -1934,6 +1997,287 @@ function pwModal(){
     <div class="row" style="justify-content:flex-end"><button class="btn ghost" type="button" data-act="pw-close">Hủy</button><button class="btn pri" type="submit">Đổi mật khẩu</button></div>
   </form></div>`;
 }
+
+// ================= TỔNG KẾT NĂM =================
+// Kỳ riêng cho tổng kết năm (cài đặt tkNam = {year, open, vuot, okr}), không dùng kỳ tháng, không qua duyệt.
+// Cán bộ chọn vị trí việc làm (nhiều vị trí), tick việc trong thư viện, chọn kết quả là ra điểm; thêm việc khác, KPI phát sinh, OKR bằng form.
+// Mỗi người 1 phiếu chung (Phụ lục 1 + Phụ lục 2 gộp mọi vị trí). Điểm cơ sở mỗi KPI = 40 ÷ tổng số KPI cơ sở đã chọn.
+const TN_DEF={year:'',open:false,vuot:0.5,okr:1.5};
+const tnCfg=()=>{const c=Object.assign({},TN_DEF,settings.tkNam||{});c.vuot=Number(c.vuot);c.okr=Number(c.okr);if(!(c.vuot>=0))c.vuot=0.5;if(!(c.okr>0))c.okr=1.5;return c;};
+const tnYear=()=>String(tnCfg().year||'');
+const tnOpen=()=>!!tnYear()&&!!tnCfg().open;
+// Phụ lục 1: tiêu chí chung (theo phiếu mẫu DM1 - CBCS). Dòng "head" là nhóm; điểm tính trên các dòng lá.
+const TN_PL1=[
+  {k:'1',head:true,max:20,t:'Về chính trị, phẩm chất đạo đức và ý thức tổ chức kỷ luật'},
+  {k:'1.1',max:2,t:'Có quan điểm, bản lĩnh chính trị vững vàng; kiên định lập trường; không dao động trước mọi khó khăn, thách thức.'},
+  {k:'1.2',max:2,t:'Thực hiện nghiêm các nguyên tắc tổ chức và hoạt động của Đảng, nhất là nguyên tắc tập trung dân chủ, tự phê bình và phê bình. Chấp hành đường lối, chủ trương của Đảng, chính sách pháp luật của Nhà nước; thực hiện nghiêm về kỷ luật phát ngôn, bảo vệ bí mật Nhà nước.'},
+  {k:'1.3',max:2,t:'Có ý thức nghiên cứu, học tập, vận dụng chủ nghĩa Mác – Lênin, tư tưởng Hồ Chí Minh, nghị quyết, chỉ thị, quyết định và các văn bản của Đảng.'},
+  {k:'1.4',max:2,t:'Giữ gìn phẩm chất đạo đức, lối sống trong sáng, trung thực, khiêm tốn, chân thành, giản dị; có ý thức tham gia công tác đấu tranh phòng, chống tham nhũng, lãng phí, tiêu cực; không có biểu hiện suy thoái về tư tưởng chính trị, đạo đức, lối sống, “tự diễn biến”, “tự chuyển hóa”; không vi phạm Quy định về những điều đảng viên không được làm.'},
+  {k:'1.5',max:2,t:'Không tham ô, tham nhũng, tiêu cực, quan liêu, hách dịch, cửa quyền, vụ lợi; không để người thân, người quen lợi dụng quyền hạn của mình để trục lợi.'},
+  {k:'1.6',max:2,t:'Có ý thức tổ chức kỷ luật, tinh thần trách nhiệm trong công tác; chấp hành sự phân công của tổ chức; thực hiện các quy định, quy chế, nội quy của đơn vị nơi công tác.'},
+  {k:'1.7',max:2,t:'Thực hiện việc kê khai và công khai tài sản, thu nhập theo quy định.'},
+  {k:'1.8',max:2,t:'Báo cáo đầy đủ, trung thực, cung cấp thông tin chính xác, khách quan về những nội dung liên quan đến việc thực hiện chức trách, nhiệm vụ được giao và hoạt động của đơn vị với cấp trên khi được yêu cầu.'},
+  {k:'1.9',max:2,t:'Giữ gìn đoàn kết nội bộ; có quan hệ tốt với đồng chí, đồng nghiệp; tích cực tham gia xây dựng tổ chức đảng, đoàn thể và các hoạt động xã hội, cộng đồng và phong trào tập thể do đơn vị tổ chức.'},
+  {k:'1.10',max:2,t:'Gần gũi, sâu sát với cơ sở; thực hiện tốt việc giữ mối liên hệ với cấp ủy và Nhân dân nơi cư trú.'},
+  {k:'2',head:true,max:8,t:'Về năng lực chuyên môn, nghiệp vụ theo yêu cầu của vị trí việc làm; khả năng đáp ứng yêu cầu thực thi nhiệm vụ được giao; thái độ công tác trong thực hiện nhiệm vụ; tinh thần đổi mới sáng tạo, dám nghĩ, dám làm, dám chịu trách nhiệm vì lợi ích chung'},
+  {k:'2.1',max:2,t:'Năng lực chuyên môn, nghiệp vụ theo yêu cầu của vị trí việc làm: (1) Có hiểu biết đầy đủ về lĩnh vực công tác được phân công; nắm vững quy định pháp luật, quy trình nghiệp vụ có liên quan đến vị trí việc làm. (2) Thường xuyên cập nhật kiến thức mới, có khả năng nghiên cứu, phân tích, tổng hợp và vận dụng sáng tạo vào công việc; đáp ứng yêu cầu đổi mới, cải cách hành chính. (3) Có kỹ năng xử lý công việc độc lập, làm việc nhóm hiệu quả. (4) Khả năng sử dụng công nghệ thông tin, áp dụng vào công việc chuyên môn.'},
+  {k:'2.2',max:2,t:'Khả năng đáp ứng yêu cầu thực thi nhiệm vụ được giao: (1) Nhiệm vụ thường xuyên: Có khả năng vận dụng thành thạo kiến thức chuyên môn, nghiệp vụ để xử lý công việc chuyên môn theo kế hoạch định kỳ; duy trì ổn định chất lượng chuyên môn. (2) Nhiệm vụ đột xuất: Có khả năng đề xuất giải pháp, thực hiện hiệu quả các công việc phát sinh; có khả năng phản ứng kịp thời, đáp ứng với yêu cầu, nhiệm vụ cụ thể.'},
+  {k:'2.3',max:2,t:'Thái độ công tác trong thực hiện nhiệm vụ: (1) Tinh thần trách nhiệm, tích cực trong công việc; kịp thời tiếp cận kiến thức mới để điều chỉnh, đề xuất cải tiến quy trình hoặc giải pháp nâng cao hiệu quả công việc. (2) Có thái độ đúng mực, phong cách làm việc chuẩn mực, lễ lối hành chính chuyên nghiệp trong quan hệ công tác. (3) Phối hợp có hiệu quả với tập thể, cá nhân có liên quan trong việc triển khai thực hiện các nhiệm vụ được phân công.'},
+  {k:'2.4',max:2,t:'Tinh thần đổi mới, sáng tạo, dám nghĩ, dám làm, dám chịu trách nhiệm vì lợi ích chung: (1) Có sản phẩm, giải pháp đột phá, sáng tạo đem lại giá trị, hiệu quả thiết thực, tác động tích cực đến kết quả thực hiện nhiệm vụ của đơn vị. (2) Sẵn sàng tham gia thực hiện nhiệm vụ chính trị, nhiệm vụ có tính chất đột xuất, phức tạp hoặc trong điều kiện khó khăn. (3) Có tinh thần chịu trách nhiệm trước kết quả công việc; sẵn sàng nhận trách nhiệm khi có sai sót và có biện pháp khắc phục rõ ràng, cụ thể.'},
+  {k:'3',max:2,t:'Tinh thần tự phê bình, tự soi, tự sửa của cá nhân; mức độ tự giác nhận diện hạn chế, khuyết điểm của bản thân và kết quả khắc phục những hạn chế, khuyết điểm đã được chỉ ra.'},
+];
+const TN_PL1_MAX=TN_PL1.filter(x=>!x.head).reduce((s,x)=>s+x.max,0);
+const TN_KQ={dat:'Hoàn thành',vuot:'Vượt',cham:'Chậm muộn',khong:'Không hoàn thành'};
+const TN_OPTS={cs:['dat','vuot','cham','khong'],ps:['dat','cham','khong'],okr:['dat','khong']};
+const TN_SRC={cs:'KPI cơ sở',ps:'KPI phát sinh',okr:'OKR'};
+S.tn={allVt:false,add:null,addVt:'',lib:'',to:'*'};
+const tnKey=(uid,y)=>y+'|'+uid;
+const tnHead=(uid,y,create)=>{const k=tnKey(uid,y);if(!tkHead[k]&&create)tkHead[k]={vts:[],pl1:{},tuNhan:'',upd:''};return tkHead[k]||{vts:[],pl1:{},tuNhan:'',upd:''};};
+const tnMine=(uid,y)=>tkItems.filter(i=>i.owner===uid&&String(i.year)===String(y));
+const tnPl1=h=>TN_PL1.filter(x=>!x.head).reduce((s,x)=>s+(h.pl1&&h.pl1[x.k]===false?0:x.max),0);
+const vtShort=g=>{const p=String(g||'').split(' · ');return p.length>1?p.slice(1).join(' · '):p[0];};
+// Điểm 1 việc theo phiếu: KPI cơ sở = điểm cơ sở + cộng (vượt) − trừ (chậm ½, không hoàn thành ×2); phát sinh = điểm cơ sở (chậm ½); OKR = hệ số × điểm cơ sở.
+function tnPts(i,tb,cfg){
+  if(i.src==='cs'){const plus=i.kq==='vuot'?cfg.vuot*tb:0,minus=i.kq==='cham'?tb/2:i.kq==='khong'?2*tb:0;return {base:tb,plus,minus,pts:tb+plus-minus};}
+  if(i.src==='ps'){const pts=i.kq==='dat'?tb:i.kq==='cham'?tb/2:0;return {base:0,plus:pts,minus:0,pts};}
+  const pts=i.kq==='dat'?cfg.okr*tb:0;return {base:0,plus:pts,minus:0,pts};}
+function tnCalc(uid,y){
+  const cfg=tnCfg(),h=tnHead(uid,y),its=tnMine(uid,y);
+  const ord=g=>{const k=h.vts.indexOf(g);return k<0?99:k;};
+  const cs=its.filter(i=>i.src==='cs').sort((a,b)=>ord(a.vt)-ord(b.vt)||String(a.created).localeCompare(String(b.created)));
+  const ii=its.filter(i=>i.src!=='cs').sort((a,b)=>(a.src==='okr')-(b.src==='okr')||String(a.created).localeCompare(String(b.created)));
+  const n=cs.length,tb=n?settings.base/n:0,p=i=>tnPts(i,tb,cfg);
+  const plus=cs.reduce((s,i)=>s+p(i).plus,0),minus=cs.reduce((s,i)=>s+p(i).minus,0);
+  const secI=n?Math.max(0,settings.base+plus-minus):0;
+  const ps=ii.filter(i=>i.src==='ps').reduce((s,i)=>s+p(i).pts,0),okr=ii.filter(i=>i.src==='okr').reduce((s,i)=>s+p(i).pts,0);
+  const okrN=ii.filter(i=>i.src==='okr'&&i.kq==='dat').length,pl1=tnPl1(h),secII=ps+okr;
+  const pr=propose({kpi:secI+ps,okrN,total:secI+secII});
+  return {cfg,h,its,cs,ii,n,tb,p,plus,minus,secI,ps,okr,okrN,secII,pl1,pl2:secI+secII,all:pl1+secI+secII,pr,tuNhan:h.tuNhan||pr.code};}
+const tnTouch=(uid,y)=>{tnHead(uid,y,true).upd=nowISO();};
+// Đã có việc này trong phiếu chưa (mỗi KPI, OKR chỉ chọn 1 lần): KPI cơ sở và phát sinh xét chung, OKR xét riêng
+const tnDup=(uid,y,src,text,lib)=>{const kpi=src!=='okr',t=norm(text).trim();
+  return tnMine(uid,y).find(i=>(i.src!=='okr')===kpi&&((lib&&i.lib===lib)||norm(i.text).trim()===t));};
+function tnAdd(src,o){const u=me(),y=tnYear();
+  const it={id:newId('n'),owner:u.id,year:y,type:src==='okr'?'OKR':'KPI',src,vt:o.vt||'',lib:o.lib||'',text:o.text,ct:o.ct||'',kq:o.kq||'dat',created:nowISO()};
+  tkItems.push(it);tnTouch(u.id,y);return it;}
+const tnDel=it=>{const k=tkItems.indexOf(it);if(k>=0)tkItems.splice(k,1);tnTouch(it.owner,it.year);};
+function tnKqBtns(it,ro){return `<div class="tkkq" role="group" aria-label="Kết quả">${TN_OPTS[it.src].map(k=>`<button type="button" data-act="tn-kq" data-id="${it.id}" data-kq="${k}" aria-pressed="${it.kq===k}" ${ro?'disabled':''}>${TN_KQ[k]}</button>`).join('')}</div>`;}
+const tnCt=(it,ro)=>ro?(it.ct?`<div class="sub">Kết quả: ${esc(it.ct)}</div>`:''):`<input type="text" class="tkct" data-act="tn-ct" data-id="${it.id}" placeholder="Kết quả thực hiện (số lượng, sản phẩm…), không bắt buộc" value="${esc(it.ct||'')}" aria-label="Kết quả thực hiện">`;
+const tnSignedPts=v=>v<0?'−'+num(-v):num(v);
+function tnView(){
+  const u=me(),y=tnYear();if(!y)return `<div class="head"><h2>Tổng kết năm</h2></div><div class="empty">Quản trị viên chưa mở kỳ tổng kết năm.</div>`;
+  const ro=!tnOpen(),c=tnCalc(u.id,y),h=c.h;
+  const strip=`<section class="score" aria-label="Điểm tổng kết năm">
+    <div class="t-info"><span class="lbl">Phụ lục 1</span><span class="v">${num(c.pl1)}</span><span class="s">Tiêu chí chung, tối đa ${TN_PL1_MAX}</span></div>
+    <div class="t-ps"><span class="lbl">KPI cơ sở</span><span class="v">${num(c.secI)}</span><span class="s">${c.n?`${c.n} việc · mỗi việc ${num(c.tb)} điểm`:'Chưa chọn việc'}</span></div>
+    <div class="t-good"><span class="lbl">Phát sinh + OKR</span><span class="v">${num(c.secII)}</span><span class="s">${c.ii.filter(i=>i.src==='ps').length} phát sinh · ${c.ii.filter(i=>i.src==='okr').length} OKR</span></div>
+    <div class="t-main"><span class="lbl">Tổng điểm</span><span class="v big">${num(c.all)}</span><span class="s">Phụ lục 1 + Phụ lục 2</span></div>
+    <div class="${c.pr.code==='HTXS'?'t-good':c.pr.code==='HTT'?'t-info':'t-warn'}"><span class="lbl">Hệ thống đề xuất</span><span class="v" style="font-size:18px">${RT[c.pr.code]}</span><span class="s">${esc(c.pr.note)}</span></div>
+  </section>`;
+  // Bước 1: vị trí việc làm
+  const mineG=vtList('KPI'),allG=[...new Set(library.filter(t=>t.type==='KPI').map(t=>t.group))].sort((a,b)=>a.localeCompare(b,'vi'));
+  const shown=[...new Set([...h.vts,...(S.tn.allVt?allG:mineG)])];
+  const step1=`<section class="panel"><div class="tkhd"><h3 class="h3">Bước 1. Chọn vị trí việc làm của tôi</h3>
+      <button class="btn sm ghost" data-act="tn-allvt">${S.tn.allVt?'Chỉ hiện vị trí của tổ tôi':'Hiện cả vị trí của tổ khác'}</button></div>
+    <div class="pad stack"><p class="sub" style="margin:0">Làm nhiều vị trí thì chọn hết. Mỗi vị trí hiện danh sách đầu việc mẫu ở bước 2.</p>
+      ${shown.length?`<div class="tkvt">${shown.map(g=>{const on=h.vts.includes(g);return `<label class="${on?'on':''}"><input type="checkbox" data-act="tn-vt" data-g="${esc(g)}" ${on?'checked':''} ${ro?'disabled':''}>${esc(S.tn.allVt?g:vtLabel(g))}</label>`;}).join('')}</div>`
+        :'<div class="empty">Thư viện chưa có đầu việc cho tổ của bạn. Bấm "Hiện cả vị trí của tổ khác" hoặc thêm việc ở bước 2.</div>'}</div></section>`;
+  // Bước 2: mỗi vị trí 1 bảng chọn việc (chỉ để nhập; phiếu in gộp chung)
+  const step2=h.vts.map(g=>{
+    const lib=library.filter(t=>t.type==='KPI'&&t.group===g),libIds=new Set(lib.map(t=>t.id));
+    const mineVt=c.cs.filter(i=>i.vt===g),extra=mineVt.filter(i=>!i.lib||!libIds.has(i.lib));
+    const nPick=mineVt.length;
+    const row=(text,it,libId)=>`<tr class="${it?'':'off'}"><td class="cb"><input type="checkbox" data-act="tn-pick" ${libId?`data-lib="${libId}"`:''} ${it?`data-id="${it.id}"`:''} data-g="${esc(g)}" ${it?'checked':''} ${ro?'disabled':''} aria-label="Chọn việc này"></td>
+      <td class="job"><div class="jt">${esc(text)}</div>${it&&!libId?'<div class="meta"><span class="chip c-dk">Tự thêm</span></div>':''}${it?tnCt(it,ro):''}</td>
+      <td class="kqc">${it?tnKqBtns(it,ro):'<span class="sub" style="margin:0">Chưa chọn</span>'}</td>
+      <td class="n">${it?`<b class="${c.p(it).pts<0?'neg':''}">${tnSignedPts(c.p(it).pts)}</b>`:'—'}</td></tr>`;
+    return `<section class="panel"><div class="tkhd"><div><h3 class="h3">Bước 2. ${esc(vtLabel(g))}</h3><p class="sub" style="margin:2px 0 0">Đã chọn ${nPick} việc. Tick việc mình làm trong năm rồi chọn kết quả.</p></div>
+      ${ro?'':`<div class="row" style="gap:6px"><button class="btn sm ghost" data-act="tn-pickall" data-g="${esc(g)}">Chọn tất cả</button><button class="btn sm ghost" data-act="tn-unpick" data-g="${esc(g)}">Bỏ chọn tất cả</button><button class="btn sm" data-act="tn-new" data-src="cs" data-g="${esc(g)}">+ Thêm việc khác</button></div>`}</div>
+      <div class="tw"><table class="tktbl"><thead><tr><th class="cb"></th><th>Mục việc</th><th>Kết quả</th><th class="n">Điểm</th></tr></thead><tbody>
+      ${lib.map(t=>row(t.text,mineVt.find(i=>i.lib===t.id),t.id)).join('')}${extra.map(i=>row(i.text,i,'')).join('')}
+      ${!lib.length&&!extra.length?'<tr><td colspan="4" class="empty">Vị trí này chưa có đầu việc mẫu. Bấm "+ Thêm việc khác".</td></tr>':''}
+      </tbody></table></div></section>`;}).join('');
+  const kpiOnly=c.cs.filter(i=>!h.vts.includes(i.vt));
+  const orphan=kpiOnly.length?`<section class="panel"><div class="tkhd"><h3 class="h3">KPI cơ sở khác</h3></div><div class="tw"><table class="tktbl"><tbody>
+    ${kpiOnly.map(i=>`<tr><td class="cb"><input type="checkbox" checked data-act="tn-pick" data-id="${i.id}" ${ro?'disabled':''} aria-label="Bỏ chọn"></td><td class="job"><div class="jt">${esc(i.text)}</div>${tnCt(i,ro)}</td><td class="kqc">${tnKqBtns(i,ro)}</td><td class="n"><b>${tnSignedPts(c.p(i).pts)}</b></td></tr>`).join('')}</tbody></table></div></section>`:'';
+  // Phần II: KPI phát sinh + OKR
+  const step3=`<section class="panel"><div class="tkhd"><div><h3 class="h3">Bước 3. KPI phát sinh và OKR</h3><p class="sub" style="margin:2px 0 0">Phát sinh hoàn thành: + ${num(c.tb||0)} điểm/việc. OKR hoàn thành: ${num(c.cfg.okr)} × ${num(c.tb||0)} = ${num(c.cfg.okr*(c.tb||0))} điểm/việc. Không hoàn thành không bị trừ.</p></div>
+      ${ro?'':`<div class="row" style="gap:6px"><button class="btn sm" data-act="tn-new" data-src="ps">+ Thêm KPI phát sinh</button><button class="btn sm pri" data-act="tn-new" data-src="okr">+ Thêm OKR</button></div>`}</div>
+    ${c.ii.length?`<div class="tw"><table class="tktbl"><thead><tr><th>Nội dung</th><th>Kết quả</th><th class="n">Điểm</th><th></th></tr></thead><tbody>
+      ${c.ii.map(i=>`<tr><td class="job"><div class="jt">${esc(i.text)}</div><div class="meta"><span class="chip ${i.src==='okr'?'c-duyet':'c-ps'}">${TN_SRC[i.src]}</span>${i.vt?`<span>${esc(vtLabel(i.vt))}</span>`:''}</div>${tnCt(i,ro)}</td>
+        <td class="kqc">${tnKqBtns(i,ro)}</td><td class="n"><b>${num(c.p(i).pts)}</b></td><td>${ro?'':`<button class="lnk" data-act="tn-del" data-id="${i.id}">Xóa</button>`}</td></tr>`).join('')}
+      </tbody></table></div>`:'<div class="empty">Chưa có KPI phát sinh hay OKR. Cần ít nhất 1 OKR hoàn thành để được đề xuất Hoàn thành xuất sắc.</div>'}</section>`;
+  // Phụ lục 1
+  const step4=`<section class="panel"><div class="tkhd"><div><h3 class="h3">Bước 4. Tiêu chí chung (Phụ lục 1)</h3><p class="sub" style="margin:2px 0 0">Đã đánh dấu sẵn "Đảm bảo". Bỏ dấu ở tiêu chí không đảm bảo (được 0 điểm).</p></div><b>${num(c.pl1)} / ${TN_PL1_MAX}</b></div>
+    <div class="tw"><table class="tktbl"><thead><tr><th>TT</th><th>Tiêu chí</th><th class="n">Tối đa</th><th>Đảm bảo</th></tr></thead><tbody>
+    ${TN_PL1.map(x=>x.head?`<tr><td><b>${x.k}</b></td><td><b>${esc(x.t)}</b></td><td class="n"><b>${x.max}</b></td><td></td></tr>`
+      :`<tr><td>${x.k}</td><td>${esc(x.t)}</td><td class="n">${x.max}</td><td><input type="checkbox" data-act="tn-pl1" data-k="${x.k}" ${h.pl1[x.k]===false?'':'checked'} ${ro?'disabled':''} aria-label="Đảm bảo tiêu chí ${x.k}"></td></tr>`).join('')}
+    </tbody></table></div></section>`;
+  const step5=`<section class="panel pad row" style="align-items:flex-end;gap:12px">
+    <div class="field" style="flex:0 1 280px"><label for="tn-tunhan">Tự nhận mức xếp loại</label><select id="tn-tunhan" ${ro?'disabled':''}>
+      <option value="">Theo đề xuất (${RT[c.pr.code]})</option>${Object.keys(RT).map(k=>`<option value="${k}" ${h.tuNhan===k?'selected':''}>${RT[k]}</option>`).join('')}</select></div>
+    <div class="spacer"></div><button class="btn pri" data-act="tn-print" data-u="${u.id}">Xem và in phiếu chấm điểm</button></section>`;
+  const modal=S.tn.add&&!ro?tnModal(c):'';
+  return `<div class="head"><h2>Tổng kết năm ${esc(y)}</h2><p>Chọn vị trí việc làm, tick việc đã làm, chọn kết quả là ra điểm. Không cần duyệt. Xong thì bấm "Xem và in phiếu chấm điểm" ở cuối trang.</p></div>
+    ${ro?`<div class="notice">Kỳ tổng kết năm ${esc(y)} đã khóa. Chỉ xem và in phiếu, không sửa được.</div>`:''}
+    ${strip}${step1}${step2}${orphan}${step3}${step4}${step5}${modal}`;
+}
+function tnModal(c){const src=S.tn.add,h=c.h,isOkr=src==='okr';
+  const title=src==='cs'?'Thêm KPI cơ sở':src==='ps'?'Thêm KPI phát sinh':'Thêm OKR';
+  const vts=h.vts,sel=S.tn.addVt||(src==='cs'?vts[0]||'':'');
+  return `<div class="ov" data-act="tn-close-ov"><form class="modal md panel pad stack" id="f-tn" role="dialog" aria-modal="true" aria-labelledby="tn-h" style="max-width:640px">
+    <div class="mhead"><h3 class="h3" id="tn-h">${title}</h3><button class="btn ghost sm" type="button" data-act="tn-close" aria-label="Đóng">✕</button></div>
+    <div class="field"><label for="tn-vt">Vị trí việc làm${src==='cs'?'':' (không bắt buộc)'}</label><select id="tn-vt" ${src==='cs'?'required':''}>
+      ${src==='cs'?'':`<option value="" ${sel?'':'selected'}>— Không theo vị trí —</option>`}${vts.map(g=>`<option value="${esc(g)}" ${g===sel?'selected':''}>${esc(vtLabel(g))}</option>`).join('')}</select>
+      ${src==='cs'&&!vts.length?'<div class="sub neg">Chọn vị trí việc làm ở bước 1 trước.</div>':''}</div>
+    <div class="field"><label for="tn-text">Nội dung</label><input type="text" id="tn-text" required autocomplete="off" placeholder="Gõ nội dung, hoặc chọn đầu việc mẫu bên dưới">
+      <div class="tksug" id="tn-sug">${tnSugList(src,sel,'')}</div></div>
+    <div class="field"><label for="tn-ct">Kết quả thực hiện (không bắt buộc)</label><input type="text" id="tn-ct" placeholder="Ví dụ: 12 báo cáo, 03 kế hoạch"></div>
+    <div class="field"><label for="tn-kq">Kết quả</label><select id="tn-kq">${TN_OPTS[src].map(k=>`<option value="${k}">${TN_KQ[k]}</option>`).join('')}</select></div>
+    <div class="row" style="justify-content:flex-end;gap:8px"><button class="btn ghost" type="button" data-act="tn-close">Đóng</button><button class="btn pri" type="submit">Thêm</button></div>
+  </form></div>`;}
+// Gợi ý đầu việc mẫu cho form thêm: theo vị trí đang chọn (OKR: các nhóm OKR của tổ mình + Chung), bỏ việc đã có trong phiếu
+function tnSugList(src,vt,q){const u=me(),y=tnYear(),type=src==='okr'?'OKR':'KPI',qq=norm(q||'').trim();
+  const okrG=new Set([...vtList('OKR'),...tnHead(u.id,y).vts.map(g=>g.split(' · ')[0])]);
+  let list=library.filter(t=>t.type===type&&(type==='OKR'?(vt?t.group===vt||okrG.has(t.group)||okrG.has(libTo(t)):okrG.has(t.group)||okrG.has(libTo(t))):vt?t.group===vt:true));
+  list=list.filter(t=>!tnDup(u.id,y,src,t.text,t.id)&&(!qq||norm(t.text).includes(qq))).slice(0,60);
+  if(!list.length)return `<div class="sub pad" style="margin:0">${qq?'Không có đầu việc mẫu khớp. Cứ gõ nội dung rồi bấm Thêm.':'Không còn đầu việc mẫu nào chưa chọn.'}</div>`;
+  return list.map(t=>`<button type="button" data-tnsug="${t.id}">${esc(t.text)}<small>${esc(t.group)}</small></button>`).join('');}
+
+// ===== Phiếu chấm điểm: 1 tờ cho 1 người, gộp mọi vị trí =====
+function tnPhieu(uid,y){const u=uObj(uid),c=tnCalc(uid,y),h=c.h,f=n=>num(Math.round(n*100)/100);
+  const dv=settings.tenDonVi||'',to=u.toCT||u.to||'';
+  const csRows=c.cs.map((i,k)=>{const p=c.p(i);return `<tr><td class="c">${k+1}</td><td>${esc(i.text)}</td><td>${esc(i.ct||'')}</td><td class="r">${f(p.base)}</td><td class="r">${p.plus?f(p.plus):''}</td><td class="r">${p.minus?f(p.minus):''}</td><td>${TN_KQ[i.kq]||''}${i.vt?`<br><i>${esc(vtShort(i.vt))}</i>`:''}</td></tr>`;}).join('')
+    ||'<tr><td colspan="7" class="c">Chưa chọn KPI</td></tr>';
+  const iiRows=c.ii.map((i,k)=>`<tr><td class="c">${k+1}</td><td>${esc(i.text)}</td><td class="c">${i.src==='okr'?'OKR':'KPI phát sinh'}</td><td>${esc(i.ct||'')}</td><td>${TN_KQ[i.kq]||''}</td><td class="r">${f(c.p(i).pts)}</td></tr>`).join('')
+    ||'<tr><td colspan="6" class="c">Không có</td></tr>';
+  const pl1Rows=TN_PL1.map(x=>{if(x.head)return `<tr class="sec"><td class="c">${x.k}</td><td>${esc(x.t)}</td><td class="c">${x.max}</td><td></td><td></td><td class="r">${f(TN_PL1.filter(z=>!z.head&&z.k.startsWith(x.k+'.')).reduce((s,z)=>s+(h.pl1[z.k]===false?0:z.max),0))}</td></tr>`;
+    const ok=h.pl1[x.k]!==false;return `<tr><td class="c">${x.k}</td><td>${esc(x.t)}</td><td class="c">${x.max}</td><td class="c">${ok?'X':''}</td><td class="c">${ok?'':'X'}</td><td class="r">${ok?x.max:0}</td></tr>`;}).join('');
+  return `<div class="phieu">
+    <div class="qh"><div><b>${esc(dv.toUpperCase())}</b><b class="u">${esc(to.toUpperCase()||'TỔ……………')}</b></div><div><b>CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM</b><b class="u">Độc lập - Tự do - Hạnh phúc</b></div></div>
+    <h1>PHIẾU TỰ CHẤM ĐIỂM KPI, OKR NĂM ${esc(y)}</h1>
+    <div class="info"><div>Họ và tên: <b>${esc(u.name)}</b></div><div>Số hiệu: ${esc(fmtSH(shOf(u)))}</div><div>Cấp bậc: ${esc(u.capBac||'')}</div><div>Chức vụ: ${esc(u.cv||'')}</div>
+      <div style="grid-column:1/-1">Vị trí việc làm: ${esc(h.vts.map(vtShort).join('; ')||'…')}</div></div>
+    <h2>PHỤ LỤC 1: TIÊU CHÍ CHUNG</h2>
+    <table><thead><tr><th style="width:34px">TT</th><th>Tiêu chí/nội dung</th><th style="width:52px">Điểm tối đa</th><th style="width:58px">Đảm bảo</th><th style="width:58px">Không đảm bảo</th><th style="width:50px">Điểm đạt</th></tr></thead><tbody>${pl1Rows}
+      <tr class="tot"><td></td><td>Tổng điểm Phụ lục 1</td><td class="c">${TN_PL1_MAX}</td><td></td><td></td><td class="r">${f(c.pl1)}</td></tr></tbody></table>
+    <h2>PHỤ LỤC 2: KPI, OKR</h2>
+    <p style="margin:2px 0"><b>I. Nhiệm vụ, công việc được xác định là KPI cơ sở</b> (điểm cơ sở mỗi việc = ${num(settings.base)} ÷ ${c.n} = ${c.n?f(c.tb):0}; vượt: cộng ${num(c.cfg.vuot)} lần điểm việc đó; chậm muộn: trừ 1/2; không hoàn thành: trừ 2 lần)</p>
+    <table><thead><tr><th style="width:34px">TT</th><th>Mục việc</th><th style="width:20%">Kết quả thực hiện</th><th style="width:48px">Điểm cơ sở</th><th style="width:48px">Điểm cộng</th><th style="width:48px">Điểm trừ</th><th style="width:96px">Ghi chú</th></tr></thead><tbody>${csRows}
+      <tr class="tot"><td></td><td colspan="2">Tổng điểm KPI đạt</td><td class="r">${c.n?f(settings.base):0}</td><td class="r">${f(c.plus)}</td><td class="r">${f(c.minus)}</td><td class="r">${f(c.secI)}</td></tr></tbody></table>
+    <p style="margin:2px 0"><b>II. Nhiệm vụ KPI phát sinh + Nhiệm vụ, công việc nổi trội, đổi mới, sáng tạo, đột phá (OKR)</b> (OKR = điểm cơ sở × ${num(c.cfg.okr)})</p>
+    <table><thead><tr><th style="width:34px">TT</th><th>Nội dung</th><th style="width:70px">Loại</th><th style="width:22%">Kết quả thực hiện</th><th style="width:76px">Kết quả</th><th style="width:52px">Điểm đạt</th></tr></thead><tbody>${iiRows}
+      <tr class="tot"><td></td><td colspan="4">Tổng điểm KPI phát sinh + OKR</td><td class="r">${f(c.secII)}</td></tr></tbody></table>
+    <table><colgroup><col><col style="width:150px"></colgroup><tbody>
+      <tr><td>Tổng điểm Phụ lục 1</td><td class="r">${f(c.pl1)}</td></tr>
+      <tr><td>Tổng điểm Phụ lục 2 (KPI + OKR)</td><td class="r">${f(c.pl2)}</td></tr>
+      <tr class="tot"><td>Tổng điểm Phụ lục 1 + 2</td><td class="r">${f(c.all)}</td></tr>
+      <tr><td>Tự nhận mức</td><td class="r"><b>${RT[c.tuNhan]||''}</b></td></tr></tbody></table>
+    <p class="tt" style="text-align:right">${esc(settings.diaDanh||'……')}, ngày …… tháng …… năm ${esc(y)}</p>
+    <div class="ky"><div><b>CÁN BỘ TỰ CHẤM ĐIỂM</b><i>(Ký, ghi rõ họ tên)</i><b>${esc(u.name)}</b></div><div><b>DUYỆT CỦA CHỈ HUY TỔ</b><i>(Ký, ghi rõ họ tên)</i></div></div>
+  </div>`;}
+function tnClosePrint(){document.querySelector('.tkpv')?.remove();document.body.classList.remove('tkprinting');}
+function tnPrint(uids){const y=tnYear();tnClosePrint();
+  const ov=document.createElement('div');ov.className='tkpv';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');ov.setAttribute('aria-label','Phiếu chấm điểm');
+  ov.innerHTML=`<div class="pvbar"><div style="flex:1 1 260px;min-width:0"><b>Phiếu chấm điểm tổng kết năm ${esc(y)}${uids.length>1?` · ${uids.length} người`:''}</b><div class="sub" style="margin:0">Bấm "In / Lưu PDF". Muốn lưu file PDF: ở hộp in chọn máy in "Lưu dưới dạng PDF" (Save as PDF).</div></div>
+    <button class="btn pri" type="button" data-tnpv="print">In / Lưu PDF</button><button class="btn" type="button" data-tnpv="close">Đóng ✕</button></div>
+    <div class="pvbody">${uids.map(id=>tnPhieu(id,y)).join('')}</div>`;
+  document.body.appendChild(ov);ov.querySelector('[data-tnpv="print"]').focus();
+  ov.addEventListener('click',e=>{const a=e.target.closest('[data-tnpv]')?.dataset.tnpv;if(a==='close')tnClosePrint();
+    if(a==='print'){document.body.classList.add('tkprinting');setTimeout(()=>{window.print();},50);}});}
+window.addEventListener('afterprint',()=>document.body.classList.remove('tkprinting'));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.querySelector('.tkpv')){e.stopImmediatePropagation();tnClosePrint();}},true);
+
+// ===== Tổng kết năm đơn vị (QTV + người duyệt): bảng điểm, in phiếu, tải Excel =====
+function tnRows(){const y=tnYear(),f=S.tn.to;
+  return scope().filter(u=>u.active!==false&&(f==='*'||u.to===f)).map(u=>({u,c:tnCalc(u.id,y)})).sort((a,b)=>String(a.u.to).localeCompare(String(b.u.to),'vi')||b.c.all-a.c.all);}
+function tnOrgView(){const y=tnYear();if(!y)return `<div class="head"><h2>Tổng kết năm đơn vị</h2></div><div class="empty">Chưa mở kỳ tổng kết năm. Quản trị viên mở ở Thiết lập hệ thống → Kỳ & chốt tháng.</div>`;
+  const rows=tnRows(),tos=[...new Set(scope().map(u=>u.to))].sort((a,b)=>a.localeCompare(b,'vi'));
+  const done=rows.filter(r=>r.c.its.length).length;
+  return `<div class="head row" style="align-items:flex-end;justify-content:space-between;gap:12px"><div><h2>Tổng kết năm ${esc(y)} · đơn vị</h2><p>Điểm do cán bộ tự chọn kết quả, không qua duyệt. ${tnOpen()?'Kỳ đang mở: cán bộ còn sửa được.':'Kỳ đã khóa.'}</p></div>
+    <div class="row" style="gap:6px"><button class="btn" data-act="tn-xlsx">Tải Excel</button><button class="btn pri" data-act="tn-printall" ${done?'':'disabled'}>In phiếu (${done} người đã nhập)</button></div></div>
+    <section class="panel"><div class="toolbar"><select id="tn-to" aria-label="Lọc theo nhóm"><option value="*">Tất cả nhóm</option>${tos.map(t=>`<option value="${esc(t)}" ${S.tn.to===t?'selected':''}>${esc(t)}</option>`).join('')}</select>
+      <span class="sub" style="margin:0">${done}/${rows.length} người đã nhập</span></div>
+    <div class="tw"><table><thead><tr><th>TT</th><th>Cán bộ</th><th>Vị trí việc làm</th><th class="n">Số KPI</th><th class="n">PL1</th><th class="n">PL2</th><th class="n">Tổng</th><th>Đề xuất</th><th>Tự nhận</th><th></th></tr></thead><tbody>
+    ${rows.map((r,k)=>`<tr><td>${k+1}</td><td>${esc(r.u.name)}<div class="sub">${esc(r.u.to)} · ${esc(r.u.cv||'')}</div></td><td>${r.c.h.vts.length?esc(r.c.h.vts.map(vtShort).join('; ')):'<span class="sub">Chưa chọn</span>'}</td>
+      <td class="n">${r.c.n}</td><td class="n">${num(r.c.pl1)}</td><td class="n">${num(r.c.pl2)}</td><td class="n"><b>${num(r.c.all)}</b></td><td>${RTS[r.c.pr.code]}</td><td>${r.c.h.tuNhan?RTS[r.c.h.tuNhan]:'<span class="sub">Theo đề xuất</span>'}</td>
+      <td>${r.c.its.length?`<button class="btn sm" data-act="tn-print" data-u="${r.u.id}">Phiếu</button>`:'<span class="chip c-chua">Chưa nhập</span>'}</td></tr>`).join('')||'<tr><td colspan="10" class="empty">Không có cán bộ.</td></tr>'}
+    </tbody></table></div></section>`;}
+function tnXlsx(){if(!window.PizZip){toast('Chưa tải được thư viện tạo file. Kiểm tra mạng rồi thử lại.');render();return;}
+  const y=tnYear(),hd=['TT','Họ và tên','Nhóm','Chức vụ','Vị trí việc làm','Số KPI cơ sở','Điểm Phụ lục 1','Điểm KPI cơ sở','Điểm phát sinh + OKR','Tổng điểm','Đề xuất','Tự nhận'];
+  const rows=[[{v:`Tổng kết năm ${y}`,s:2}],[{v:'Bảng tổng hợp điểm',s:1}],hd.map(v=>({v,s:1})),
+    ...tnRows().map((r,k)=>[k+1,r.u.name,r.u.to,r.u.cv||'',r.c.h.vts.map(vtShort).join('; '),r.c.n,r.c.pl1,Math.round(r.c.secI*100)/100,Math.round(r.c.secII*100)/100,Math.round(r.c.all*100)/100,RT[r.c.pr.code],RT[r.c.tuNhan]].map(v=>({v,s:0})))];
+  saveFile(`TongKetNam_${y}.xlsx`,xlsxBlob([{name:'Tong ket nam',rows}]));}
+
+// ===== QTV: mở, khóa kỳ tổng kết năm =====
+function tnKyPanel(){const c=tnCfg(),y=tnYear(),cur=nowISO().slice(0,4);
+  return `<form class="panel pad stack" id="f-tnky"><div class="row" style="justify-content:space-between;gap:10px;align-items:center"><h3 class="h3" style="margin:0">Kỳ tổng kết năm</h3>
+      ${y?(c.open?'<span class="chip c-duyet">Đang mở cho cán bộ nhập</span>':'<span class="chip c-lock">Đã khóa</span>'):'<span class="chip c-chua">Chưa mở</span>'}</div>
+    <p class="sub" style="margin:0">Kỳ riêng, không theo tháng. Cán bộ tự chọn vị trí, việc, kết quả; không qua duyệt. Mở kỳ thì menu "Tổng kết năm" hiện cho mọi người.</p>
+    <div class="row" style="gap:12px;align-items:flex-end">
+      <div class="field" style="flex:0 1 120px"><label for="tny-year">Năm</label><input type="number" id="tny-year" min="2020" max="2100" required value="${esc(y||cur)}"></div>
+      <div class="field" style="flex:0 1 200px"><label for="tny-vuot">Vượt KPI: cộng (× điểm việc)</label><input type="number" id="tny-vuot" min="0" max="5" step="0.1" required value="${c.vuot}"></div>
+      <div class="field" style="flex:0 1 200px"><label for="tny-okr">OKR hoàn thành (× điểm cơ sở)</label><input type="number" id="tny-okr" min="1" max="5" step="0.1" required value="${c.okr}"></div>
+      <button class="btn pri" type="submit">${y?'Lưu':'Mở kỳ tổng kết năm'}</button>
+      ${y?(c.open?'<button class="btn bad" type="button" data-act="tn-lock">Khóa nhập</button>':'<button class="btn" type="button" data-act="tn-unlock">Mở lại cho nhập</button>'):''}
+    </div></form>`;}
+
+document.addEventListener('click',e=>{
+  const sg=e.target.closest('[data-tnsug]');
+  if(sg){const t=library.find(x=>x.id===sg.dataset.tnsug),inp=$('#tn-text');if(t&&inp){inp.value=t.text;S.tn.lib=t.id;inp.focus();}return;}
+  const b=e.target.closest('[data-act]');if(!b||b.disabled)return;const a=b.dataset.act;if(!a.startsWith('tn-'))return;
+  const u=me(),y=tnYear(),it=b.dataset.id&&tkItems.find(i=>i.id===b.dataset.id);
+  switch(a){
+    case 'tn-allvt':S.tn.allVt=!S.tn.allVt;break;
+    case 'tn-kq':if(it&&tnOpen()){it.kq=b.dataset.kq;tnTouch(it.owner,it.year);}break;
+    case 'tn-pickall':{const g=b.dataset.g;let n=0;library.filter(t=>t.type==='KPI'&&t.group===g).forEach(t=>{if(!tnDup(u.id,y,'cs',t.text,t.id)){tnAdd('cs',{vt:g,lib:t.id,text:t.text});n++;}});toast(n?`Đã chọn thêm ${n} việc.`:'Đã chọn hết rồi.');break;}
+    case 'tn-unpick':{const g=b.dataset.g,list=tnMine(u.id,y).filter(i=>i.src==='cs'&&i.vt===g);list.forEach(tnDel);toast(`Đã bỏ chọn ${list.length} việc.`);break;}
+    case 'tn-new':S.tn.add=b.dataset.src;S.tn.addVt=b.dataset.g||'';S.tn.lib='';render();setTimeout(()=>$('#tn-text')?.focus());return;
+    case 'tn-close':S.tn.add=null;break;
+    case 'tn-close-ov':return;
+    case 'tn-del':if(it){tnDel(it);toast('Đã xóa.');}break;
+    case 'tn-print':tnPrint([b.dataset.u]);return;
+    case 'tn-printall':{const ids=tnRows().filter(r=>r.c.its.length).map(r=>r.u.id);if(ids.length)tnPrint(ids);return;}
+    case 'tn-xlsx':tnXlsx();return;
+    case 'tn-lock':settings.tkNam=Object.assign({},tnCfg(),{open:false});toast('Đã khóa kỳ tổng kết năm. Cán bộ chỉ xem và in phiếu.');break;
+    case 'tn-unlock':settings.tkNam=Object.assign({},tnCfg(),{open:true});toast('Đã mở lại kỳ tổng kết năm cho cán bộ nhập.');break;
+    default:return;
+  }
+  render();
+});
+document.addEventListener('change',e=>{const t=e.target,a=t.dataset&&t.dataset.act,u=me(),y=tnYear();
+  if(a==='tn-vt'){const g=t.dataset.g,h=tnHead(u.id,y,true);
+    if(t.checked){if(!h.vts.includes(g))h.vts.push(g);}
+    else{const n=tnMine(u.id,y).filter(i=>i.src==='cs'&&i.vt===g).length;
+      if(n){toast(`Vị trí này đang có ${n} việc đã chọn. Bấm "Bỏ chọn tất cả" ở bảng của vị trí đó trước.`);render();return;}
+      h.vts=h.vts.filter(x=>x!==g);}
+    tnTouch(u.id,y);render();return;}
+  if(a==='tn-pick'){const it=t.dataset.id&&tkItems.find(i=>i.id===t.dataset.id);
+    if(t.checked&&!it){const lib=library.find(x=>x.id===t.dataset.lib);if(lib&&!tnDup(u.id,y,'cs',lib.text,lib.id))tnAdd('cs',{vt:t.dataset.g,lib:lib.id,text:lib.text});}
+    else if(!t.checked&&it)tnDel(it);
+    render();return;}
+  if(a==='tn-pl1'){const h=tnHead(u.id,y,true);h.pl1=Object.assign({},h.pl1);if(t.checked)delete h.pl1[t.dataset.k];else h.pl1[t.dataset.k]=false;tnTouch(u.id,y);render();return;}
+  if(t.id==='tn-tunhan'){const h=tnHead(u.id,y,true);h.tuNhan=t.value;tnTouch(u.id,y);render();return;}
+  if(t.id==='tn-to'){S.tn.to=t.value;render();return;}
+  if(t.id==='tn-vt'){S.tn.addVt=t.value;const box=$('#tn-sug');if(box)box.innerHTML=tnSugList(S.tn.add,t.value,$('#tn-text')?.value||'');return;}
+});
+document.addEventListener('input',e=>{const t=e.target;
+  if(t.dataset&&t.dataset.act==='tn-ct'){const it=tkItems.find(i=>i.id===t.dataset.id);if(it){it.ct=t.value;tnTouch(it.owner,it.year);}return;}
+  if(t.id==='tn-text'){S.tn.lib='';const box=$('#tn-sug');if(box)box.innerHTML=tnSugList(S.tn.add,$('#tn-vt')?.value||'',t.value);}
+});
+document.addEventListener('submit',e=>{const f=e.target;
+  if(f.id==='f-tn'){e.preventDefault();const u=me(),y=tnYear(),src=S.tn.add,text=$('#tn-text').value.trim(),vt=$('#tn-vt')?.value||'';
+    if(!text||!src)return;if(src==='cs'&&!vt){toast('Chọn vị trí việc làm.');render();return;}
+    const lib=S.tn.lib&&library.find(x=>x.id===S.tn.lib&&x.text===text)?S.tn.lib:'';
+    if(tnDup(u.id,y,src,text,lib)){toast('Việc này đã có trong phiếu (mỗi KPI, OKR chỉ chọn 1 lần).');render();return;}
+    tnAdd(src,{vt,lib,text,ct:$('#tn-ct').value.trim(),kq:$('#tn-kq').value});
+    S.tn.add=null;S.tn.lib='';toast(`Đã thêm ${TN_SRC[src]}.`);render();return;}
+  if(f.id==='f-tnky'){e.preventDefault();const yr=String(Math.round(Number($('#tny-year').value)));
+    if(!/^\d{4}$/.test(yr)){toast('Năm không hợp lệ.');render();return;}
+    const old=tnCfg(),isNew=!old.year;
+    settings.tkNam={year:yr,open:isNew?true:old.open,vuot:Math.max(0,Number($('#tny-vuot').value)||0),okr:Math.max(1,Number($('#tny-okr').value)||1.5)};
+    toast(isNew?`Đã mở kỳ tổng kết năm ${yr}. Cán bộ thấy menu "Tổng kết năm".`:'Đã lưu cài đặt kỳ tổng kết năm.');render();return;}
+});
 
 // ================= SỰ KIỆN =================
 function refreshList(){const l=$('#list');if(!l)return;l.innerHTML=S.view==='duyet'?approvalList():mineList(S.view);}
