@@ -628,7 +628,7 @@ function openPeriod(pid){if(periods.some(p=>p.id===pid))return -1;periods.push({
 // Kỳ được mở sẵn nhiều tháng, nên việc "Lặp hằng tháng" chỉ tự giao cho tháng này và tháng sau (để cán bộ đăng ký trước).
 // Chỉ chạy ở máy QTV (cán bộ không nhận danh sách việc giao), ngay sau khi nạp dữ liệu mới.
 const addMonth=(pid,k)=>{const [y,m]=pid.split('-').map(Number),t=y*12+m-1+k;return `${Math.floor(t/12)}-${pad(t%12+1)}`;};
-function autoRepeat(){const cur=nowISO().slice(0,7),nx=addMonth(cur,1);let n=0;
+function autoRepeat(){if(settings.tamDongThang)return 0;const cur=nowISO().slice(0,7),nx=addMonth(cur,1);let n=0;
   assigns.filter(a=>a.repeat&&a.periods.length).forEach(a=>{const first=a.periods.slice().sort()[0];
     periods.filter(p=>p.state==='open'&&p.id>first&&p.id>=cur&&p.id<=nx).forEach(p=>n+=applyAssign(a,p.id,`${p.id}-01 00:00`));});
   return n;}
@@ -682,7 +682,7 @@ function applyData(d){
 function clearSession(){API.token=null;API.queue=[];TK.clear();applyData({});}
 function enterApp(uid){const x=uObj(uid),cur=nowISO().slice(0,7);
   const per=pObj(cur)?cur:(periods.filter(p=>p.id<=cur).at(-1)?.id||periods[0]?.id||cur),last=periods.filter(p=>p.id<cur).at(-1)?.id||per;
-  Object.assign(S,{user:uid,loginErr:'',loginBusy:false,view:!x.evaluated?(isApprover(x)?'tqdv':'giao'):hasBoth(x)&&sideGet()==='org'?'tqdv':'tongquan',lastV:null,period:per,thTo:'*',rep:{period:last,to:'*',who:'*'}});S.giao.period=per;
+  Object.assign(S,{user:uid,loginErr:'',loginBusy:false,view:!x.evaluated?(isApprover(x)?'tqdv':'giao'):hasBoth(x)&&sideGet()==='org'?'tqdv':meHome(),lastV:null,period:per,thTo:'*',rep:{period:last,to:'*',who:'*'}});S.giao.period=per;
   toast(`Xin chào ${x.name}.`);render();}
 // Nạp lại dữ liệu mới nhất (người khác vừa duyệt, vừa giao việc…) khi không có thay đổi đang chờ lưu
 function refreshData(force){if(!API.token||API.busy||API.queue.length||diffChanges().length)return;
@@ -713,10 +713,12 @@ const fmt=s=>{if(!s)return '—';const [d,t]=s.split(' ');const [y,m,dd]=d.split
 const fmtD=s=>s?fmt(s.slice(0,10)):'—';
 const pLabel=id=>{const [y,m]=id.split('-');return `Tháng ${Number(m)}/${y}`};
 const pObj=id=>periods.find(p=>p.id===id);
-const isOpen=id=>pObj(id)?.state==='open';
+// Tạm đóng kỳ tháng (cài đặt tamDongThang): mọi kỳ tháng chỉ xem, chỉ để kỳ tổng kết năm. Không chốt, dữ liệu giữ nguyên.
+const thangDong=()=>!!settings.tamDongThang;
+const isOpen=id=>pObj(id)?.state==='open'&&!thangDong();
 const monthEnded=pid=>curP()>pid;
 // Hết tháng: việc chưa bấm gì tự chuyển Không hoàn thành (chạy 1 lần cho mỗi kỳ)
-function autoMiss(){periods.forEach(p=>{if(p.state!=='open'||p.autoMissed||!monthEnded(p.id))return;p.autoMissed=true;
+function autoMiss(){if(thangDong())return;periods.forEach(p=>{if(p.state!=='open'||p.autoMissed||!monthEnded(p.id))return;p.autoMissed=true;
   items.filter(i=>i.period===p.id&&i.status==='chua').forEach(i=>{i.status='khongdat';i.auto=true;i.reason='Hết tháng chưa báo hoàn thành (hệ thống tự chuyển).';i.approvedAt=`${p.id}-${pad(new Date(+p.id.slice(0,4),+p.id.slice(5),0).getDate())} 23:59`;i.approvedBy='Hệ thống';});});}
 const me=()=>uObj(S.user);
 const lockDate=pid=>`${pid}-${pad(settings.lockDay)}`;
@@ -922,7 +924,8 @@ const LABEL={chuongtrinh:'Chương trình tháng',bcthang:'Báo cáo tháng',the
 const ME_VIEWS=['tongquan','chuongtrinh','bcthang','kpi','ps','okr','tknam'];
 const hasBoth=u=>!!u.evaluated&&isApprover(u);
 const sideOf=v=>ME_VIEWS.includes(v)?'me':'org';
-function meGroups(){return [['Tổng quan – Báo cáo',['tongquan','chuongtrinh','bcthang']],['Nhập liệu',['kpi','ps','okr']],...(tnYear()?[['Tổng kết năm',['tknam']]]:[])];}
+const meHome=()=>thangDong()&&tnYear()?'tknam':'tongquan';
+function meGroups(){if(thangDong()&&tnYear())return [['Tổng kết năm',['tknam']]];return [['Tổng quan – Báo cáo',['tongquan','chuongtrinh','bcthang']],['Nhập liệu',['kpi','ps','okr']],...(tnYear()?[['Tổng kết năm',['tknam']]]:[])];}
 function orgGroups(u){const g=[['Tổng quan',['tqdv']],['Theo dõi & duyệt',['theodoi','duyet',...(u.isAdmin?['giao']:[])]],['Xếp loại & báo cáo',['tonghop','bcdau','bccuoi',...(tnYear()?['tkdv']:[])]]];
   if(u.isAdmin)g.push(['Thiết lập hệ thống',['ky','phanquyen','thuvien','taikhoan','caidat']]);return g;}
 function navGroups(u){if(!isApprover(u))return meGroups();if(!u.evaluated)return orgGroups(u);return sideOf(S.view)==='me'?meGroups():orgGroups(u);}
@@ -961,6 +964,7 @@ function shell(){
     </div></div>${S.pwOpen?pwModal():dlModal()}`;
 }
 function view(){
+  if(meHome()==='tknam'&&ME_VIEWS.includes(S.view)&&S.view!=='tknam')S.view='tknam'; // đang tạm đóng kỳ tháng: phần "Của tôi" chỉ còn Tổng kết năm
   if(VC[S.view])return mine(S.view);
   return ({chuongtrinh:ctView,bcthang:bcView,theodoi:tdView,phanquyen:pqView,tongquan:overview,tqdv:orgView,duyet:approvals,tonghop:summary,bcdau:reportDau,bccuoi:reportCuoi,giao:giaoView,thuvien:libView,ky:kyView,taikhoan:accounts,caidat:settingsView,tknam:tnView,tkdv:tnOrgView}[S.view]||(()=>''))();
 }
@@ -1720,6 +1724,11 @@ function libView(){
 // ================= QTV: KỲ & CHỐT THÁNG =================
 function kyView(){
   return `<div class="head"><h2>Kỳ & chốt tháng</h2><p>Hết tháng, việc nào cán bộ chưa báo gì thì hệ thống tự chuyển Không hoàn thành (KPI bị trừ 2 × điểm TB, OKR không bị trừ). Việc đang chờ duyệt giữ nguyên để quản lý duyệt. Chốt tháng khi đã duyệt hết.</p></div>
+    <section class="panel pad row" style="gap:12px;align-items:center;${thangDong()?'border-color:var(--warn);background:var(--warn-soft)':''}">
+      <div style="flex:1 1 320px"><b>${thangDong()?'Đang tạm đóng tất cả kỳ tháng':'Các kỳ tháng đang dùng bình thường'}</b>
+        <div class="sub" style="margin:2px 0 0">${thangDong()?'Cán bộ chỉ thấy Tổng kết năm; KPI, OKR tháng chỉ xem, không ai sửa được. Không chốt kỳ nào, việc chưa xong không bị tính Không hoàn thành.':'Tạm đóng khi chỉ muốn dùng kỳ tổng kết năm. Không chốt kỳ, không trừ điểm; mở lại được bất cứ lúc nào.'}</div></div>
+      ${thangDong()?'<button class="btn pri" type="button" data-act="tn-thang" data-on="0">Mở lại các kỳ tháng</button>':'<button class="btn" type="button" data-act="tn-thang" data-on="1">Tạm đóng tất cả kỳ tháng</button>'}
+    </section>
     ${tnKyPanel()}
     <section class="panel"><div class="tw"><table><thead><tr><th>Kỳ</th><th>Hạn chốt đăng ký</th><th>Trạng thái</th><th class="n">Chờ duyệt</th><th class="n">KPI chưa hoàn thành</th><th class="n">Thao tác</th></tr></thead><tbody>
       ${periods.slice().reverse().map(p=>{const its=items.filter(i=>i.period===p.id),pend=its.filter(i=>i.status==='cho'||i.status==='xinxoa').length,left=its.filter(i=>i.type==='KPI'&&i.src!=='ps'&&i.status==='chua').length;
@@ -2240,6 +2249,7 @@ document.addEventListener('click',e=>{
     case 'tn-printall':{const ids=tnRows().filter(r=>r.c.its.length).map(r=>r.u.id);if(ids.length)tnPrint(ids);return;}
     case 'tn-xlsx':tnXlsx();return;
     case 'tn-lock':settings.tkNam=Object.assign({},tnCfg(),{open:false});toast('Đã khóa kỳ tổng kết năm. Cán bộ chỉ xem và in phiếu.');break;
+    case 'tn-thang':settings.tamDongThang=b.dataset.on==='1';toast(settings.tamDongThang?'Đã tạm đóng tất cả kỳ tháng. Cán bộ chỉ thấy Tổng kết năm.':'Đã mở lại các kỳ tháng.');break;
     case 'tn-unlock':settings.tkNam=Object.assign({},tnCfg(),{open:true});toast('Đã mở lại kỳ tổng kết năm cho cán bộ nhập.');break;
     default:return;
   }
@@ -2295,7 +2305,7 @@ document.addEventListener('click',e=>{
     case 'logout':{const tk=API.token;flushSync().finally(()=>call('logout',tk).catch(()=>{}));clearSession();}
       Object.assign(S,{user:null,itemOpen:null,itemD:{},addUser:false,dlSeen:{},giaoOpen:false,giaoMenu:false,editing:null,confirmDel:null,reasonFor:null,loginErr:'',menu:false,editUser:null,chot:null,revoke:null});S.sel.clear();S.qsel.clear();break;
     case 'nav':Object.assign(S,{setModal:null,setDel:null,view:b.dataset.v,giaoMenu:false,itemOpen:null,addUser:false,editUser:null,editing:null,confirmDel:null,reasonFor:null,menu:false,chot:null,revoke:null,tdCopy:''});if(b.dataset.v==='theodoi'&&pObj(curP()))S.period=curP();if(b.dataset.v==='tonghop'){const last=periods.filter(x=>x.id<curP()).at(-1);if(last)S.period=last.id;}window.scrollTo(0,0);if(Date.now()-API.lastLoad>60000)setTimeout(()=>refreshData(true),50);break;
-    case 'side':{const s=b.dataset.s;const v=(S.lastV&&S.lastV[s])||(s==='me'?'tongquan':'tqdv');Object.assign(S,{view:v,editing:null,confirmDel:null,menu:false,tdCopy:''});window.scrollTo(0,0);break;}
+    case 'side':{const s=b.dataset.s;const v=(S.lastV&&S.lastV[s])||(s==='me'?meHome():'tqdv');Object.assign(S,{view:v,editing:null,confirmDel:null,menu:false,tdCopy:''});window.scrollTo(0,0);break;}
     case 'tqgo':{const d=b.closest('[data-v]').dataset;Object.assign(S,{view:d.v,editing:null,confirmDel:null,menu:false});
       if(d.p)S.period=d.p;if(d.f!=null){S.tdF=d.f;S.tdMsg='';}if(d.to!=null)S.tdTo=d.to;if(d.v==='theodoi')S.tdQ='';window.scrollTo(0,0);break;}
     case 'goto':Object.assign(S,{view:b.dataset.v,editing:null,confirmDel:null});S.filter[b.dataset.v]=b.dataset.f;window.scrollTo(0,0);break;
